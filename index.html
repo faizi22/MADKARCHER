@@ -44,7 +44,10 @@
             <nav class="hidden md:flex space-x-8 font-medium text-sm">
                 <a href="#pakej" class="hover:text-karcher-yellow transition">Pakej & Harga</a>
                 <a href="#kegunaan" class="hover:text-karcher-yellow transition">Kegunaan</a>
-                <a href="#kalendar" class="hover:text-karcher-yellow transition text-karcher-yellow font-bold">Semak Kalendar</a>
+                <!-- Tab Kalendar Popup Trigger -->
+                <button onclick="openCalendarModal()" class="text-karcher-yellow font-bold hover:underline flex items-center gap-1">
+                    <i class="fa-regular fa-calendar-days"></i> Semak Kalendar
+                </button>
                 <a href="#tempahan" class="hover:text-karcher-yellow transition">Borang Tempahan</a>
                 <a href="#terma" class="hover:text-karcher-yellow transition">Terma & Syarat</a>
             </nav>
@@ -72,10 +75,10 @@
                     <a href="#tempahan" class="bg-karcher-yellow hover:bg-karcher-yellowHover text-karcher-black font-extrabold px-8 py-4 rounded-xl text-center text-lg transition shadow-lg shadow-karcher-yellow/20">
                         Sewa Sekarang (RM90/Hari)
                     </a>
-                    <a href="#kalendar" class="border border-gray-600 hover:border-karcher-yellow text-white font-semibold px-8 py-4 rounded-xl text-center text-lg transition flex items-center justify-center gap-2">
-                        <i class="fa-regular fa-calendar-check text-karcher-yellow"></i>
-                        <span>Semak Tarikh Kosong</span>
-                    </a>
+                    <button onclick="openCalendarModal()" class="border border-karcher-yellow text-karcher-yellow hover:bg-karcher-yellow hover:text-karcher-black font-bold px-8 py-4 rounded-xl text-center text-lg transition flex items-center justify-center gap-2">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>Semak Tarikh Available</span>
+                    </button>
                 </div>
             </div>
             <!-- Equipment Icon Box -->
@@ -85,63 +88,6 @@
                 </div>
                 <h3 class="text-2xl font-black text-white">KÄRCHER PUZZI PROFESSIONAL</h3>
                 <p class="text-gray-400 text-sm mt-2">Mesin Spray-Extraction Berkuasa Tinggi</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- TAB BARU: KALENDAR KETERSEDIAAN (AVAILABILITY CALENDAR) -->
-    <section id="kalendar" class="py-16 bg-karcher-black border-b border-karcher-gray">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-10">
-                <span class="text-karcher-yellow font-bold uppercase tracking-wider text-sm">Status Ketersediaan Slot</span>
-                <h2 class="text-3xl sm:text-4xl font-black text-white mt-1">JADUAL KETERSEDIAAN MESIN</h2>
-                <p class="text-gray-400 mt-2 text-sm">Sila semak tarikh pilihan anda sebelum membuat tempahan.</p>
-            </div>
-
-            <!-- Kalendar Wrapper -->
-            <div class="bg-karcher-dark rounded-2xl p-6 sm:p-8 border border-karcher-yellow/30 shadow-xl">
-                <!-- Status Legend -->
-                <div class="flex flex-wrap items-center justify-between gap-4 pb-6 mb-6 border-b border-karcher-gray text-xs sm:text-sm">
-                    <div class="flex items-center gap-2">
-                        <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block"></span>
-                        <span class="text-gray-300">Tersedia (Boleh Ditempah)</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-3.5 h-3.5 rounded-full bg-red-500 inline-block"></span>
-                        <span class="text-gray-300">Telah Ditempah (Fully Booked)</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-3.5 h-3.5 rounded-full bg-amber-500 inline-block"></span>
-                        <span class="text-gray-300">Slot Terhad</span>
-                    </div>
-                </div>
-
-                <!-- Month Header Navigation -->
-                <div class="flex justify-between items-center mb-6">
-                    <button onclick="changeMonth(-1)" class="bg-karcher-gray hover:bg-karcher-yellow hover:text-karcher-black text-white px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
-                        <i class="fa-solid fa-chevron-left"></i> Bulan Lepas
-                    </button>
-                    <h3 id="currentMonthYear" class="text-xl font-bold text-karcher-yellow">Okt 2026</h3>
-                    <button onclick="changeMonth(1)" class="bg-karcher-gray hover:bg-karcher-yellow hover:text-karcher-black text-white px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
-                        Bulan Depan <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-
-                <!-- Calendar Grid Header (Days of Week) -->
-                <div class="grid grid-cols-7 gap-2 text-center text-xs font-bold text-gray-400 mb-2 uppercase">
-                    <div>Ahad</div>
-                    <div>Isnin</div>
-                    <div>Selasa</div>
-                    <div>Rabu</div>
-                    <div>Khamis</div>
-                    <div>Jumaat</div>
-                    <div>Sabtu</div>
-                </div>
-
-                <!-- Dynamic Calendar Days Grid -->
-                <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-center text-sm">
-                    <!-- Javascript will populate days here -->
-                </div>
             </div>
         </div>
     </section>
@@ -292,7 +238,12 @@
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-300 mb-2">Tarikh Mula Sewa</label>
-                            <input type="date" id="startDate" required class="w-full bg-karcher-dark border border-karcher-gray focus:border-karcher-yellow text-white rounded-lg px-4 py-3 outline-none transition">
+                            <div class="flex gap-2">
+                                <input type="date" id="startDate" required class="w-full bg-karcher-dark border border-karcher-gray focus:border-karcher-yellow text-white rounded-lg px-4 py-3 outline-none transition">
+                                <button type="button" onclick="openCalendarModal()" class="bg-karcher-yellow text-karcher-black px-3 py-2 rounded-lg font-bold text-sm hover:bg-karcher-yellowHover transition flex items-center gap-1">
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-300 mb-2">Tarikh Penghantaran (H-1)</label>
@@ -337,6 +288,58 @@
         </div>
     </section>
 
+    <!-- MODAL POPUP FEATURE: KALENDAR KETERSEDIAAN -->
+    <div id="calendarModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-karcher-dark border border-karcher-yellow/40 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-karcher-gray">
+                <div>
+                    <h3 class="text-xl font-black text-white flex items-center gap-2">
+                        <i class="fa-regular fa-calendar-check text-karcher-yellow"></i> Kalendar Ketersediaan
+                    </h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Merah = Tidak Available / Fully Booked</p>
+                </div>
+                <button onclick="closeCalendarModal()" class="text-gray-400 hover:text-white text-2xl font-bold px-2">&times;</button>
+            </div>
+
+            <!-- Indicator Legend -->
+            <div class="flex justify-center gap-6 mb-4 text-xs">
+                <div class="flex items-center gap-2">
+                    <span class="w-3.5 h-3.5 rounded bg-emerald-500 inline-block"></span>
+                    <span class="text-gray-300">Available</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-3.5 h-3.5 rounded bg-red-600 inline-block"></span>
+                    <span class="text-red-400 font-semibold">Tidak Available (Merah)</span>
+                </div>
+            </div>
+
+            <!-- Month Controls -->
+            <div class="flex justify-between items-center mb-4 bg-karcher-black p-2 rounded-lg border border-karcher-gray">
+                <button onclick="changeMonth(-1)" class="text-karcher-yellow hover:text-white font-bold px-3 py-1 text-sm">&lt; Lepas</button>
+                <span id="modalMonthYear" class="text-white font-extrabold text-base">Oktober 2026</span>
+                <button onclick="changeMonth(1)" class="text-karcher-yellow hover:text-white font-bold px-3 py-1 text-sm">Depan &gt;</button>
+            </div>
+
+            <!-- Days Grid Header -->
+            <div class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-gray-400 uppercase mb-2">
+                <div>Aha</div><div>Isn</div><div>Sel</div><div>Rab</div><div>Kha</div><div>Jum</div><div>Sab</div>
+            </div>
+
+            <!-- Grid Dynamic Days -->
+            <div id="modalCalendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm">
+                <!-- Javascript will populate days here -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="mt-6 pt-4 border-t border-karcher-gray text-center">
+                <p class="text-xs text-gray-400 mb-3">Klik mana-mana tarikh <span class="text-emerald-400 font-semibold">HIJAU</span> untuk pilih tarikh tempahan anda.</p>
+                <button onclick="closeCalendarModal()" class="bg-karcher-gray hover:bg-gray-700 text-white font-bold px-6 py-2 rounded-lg text-xs">Tutup Kalendar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-karcher-dark border-t border-karcher-gray py-8 text-center text-xs text-gray-500">
         <p>&copy; 2026 MADKARCHER / KILOFOXTROT. Hak Cipta Terpelihara.</p>
@@ -345,16 +348,31 @@
 
     <!-- JavaScript Logic -->
     <script>
-        // Calendar Logic
-        let currentDisplayDate = new Date(2026, 9, 1); // Oktober 2026
-        
-        // Contoh tarikh yang telah dibooking (Format: YYYY-MM-DD)
-        const bookedDates = ['2026-10-10', '2026-10-11', '2026-10-17', '2026-10-18', '2026-10-24'];
-        const limitedDates = ['2026-10-09', '2026-10-16', '2026-10-23'];
+        // Set tarikh Oktober 2026 sebagai contoh
+        let currentDisplayDate = new Date(2026, 9, 1);
 
-        function renderCalendar() {
-            const grid = document.getElementById('calendarGrid');
-            const monthHeader = document.getElementById('currentMonthYear');
+        // SENARAI TARIKH TIDAK AVAILABLE (Warna MERAH)
+        const unavailableDates = [
+            '2026-10-10', 
+            '2026-10-11', 
+            '2026-10-17', 
+            '2026-10-18', 
+            '2026-10-24', 
+            '2026-10-25'
+        ];
+
+        function openCalendarModal() {
+            document.getElementById('calendarModal').classList.remove('hidden');
+            renderModalCalendar();
+        }
+
+        function closeCalendarModal() {
+            document.getElementById('calendarModal').classList.add('hidden');
+        }
+
+        function renderModalCalendar() {
+            const grid = document.getElementById('modalCalendarGrid');
+            const monthHeader = document.getElementById('modalMonthYear');
             grid.innerHTML = '';
 
             const year = currentDisplayDate.getFullYear();
@@ -366,36 +384,29 @@
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDays = new Date(year, month + 1, 0).getDate();
 
-            // Empty slots before 1st day
+            // Petak kosong sebelum tarikh 1hb
             for (let i = 0; i < firstDayIndex; i++) {
                 const emptyCell = document.createElement('div');
-                emptyCell.className = "h-12 border border-transparent";
+                emptyCell.className = "h-10";
                 grid.appendChild(emptyCell);
             }
 
-            // Fill days
+            // Jana petak tarikh
             for (let day = 1; day <= totalDays; day++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const cell = document.createElement('div');
                 
-                let bgClass = "bg-karcher-black border-karcher-gray hover:border-karcher-yellow text-white cursor-pointer";
-                let statusBadge = '<span class="w-2 h-2 rounded-full bg-emerald-500 mx-auto mt-1 block"></span>';
+                const isUnavailable = unavailableDates.includes(dateStr);
 
-                if (bookedDates.includes(dateStr)) {
-                    bgClass = "bg-red-950/40 border-red-800/50 text-red-300 opacity-80 cursor-not-allowed";
-                    statusBadge = '<span class="text-[10px] text-red-400 block mt-0.5">Booked</span>';
-                } else if (limitedDates.includes(dateStr)) {
-                    bgClass = "bg-amber-950/40 border-amber-800/50 text-amber-300 cursor-pointer";
-                    statusBadge = '<span class="text-[10px] text-amber-400 block mt-0.5">Terhad</span>';
-                }
-
-                cell.className = `h-14 p-1.5 rounded-lg border flex flex-col justify-between ${bgClass} transition`;
-                cell.innerHTML = `
-                    <span class="font-bold text-xs sm:text-sm">${day}</span>
-                    ${statusBadge}
-                `;
-
-                if (!bookedDates.includes(dateStr)) {
+                if (isUnavailable) {
+                    // Warna MERAH jika TIDAK AVAILABLE
+                    cell.className = "h-10 rounded-lg bg-red-600/30 border border-red-600 text-red-300 font-bold flex flex-col items-center justify-center cursor-not-allowed text-xs relative";
+                    cell.innerHTML = `<span>${day}</span><span class="text-[8px] text-red-400 font-black uppercase">Penuh</span>`;
+                    cell.title = "Tarikh ini tidak available / telah ditempah";
+                } else {
+                    // Warna HIJAU jika AVAILABLE
+                    cell.className = "h-10 rounded-lg bg-emerald-950/40 border border-emerald-600/60 text-emerald-300 font-bold flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-600 hover:text-white transition text-xs";
+                    cell.innerHTML = `<span>${day}</span>`;
                     cell.onclick = () => selectCalendarDate(dateStr);
                 }
 
@@ -405,19 +416,21 @@
 
         function changeMonth(step) {
             currentDisplayDate.setMonth(currentDisplayDate.getMonth() + step);
-            renderCalendar();
+            renderModalCalendar();
         }
 
         function selectCalendarDate(dateStr) {
             document.getElementById('startDate').value = dateStr;
             
-            // Auto set delivery date H-1
+            // Auto set tarikh penghantaran H-1
             const d = new Date(dateStr);
             d.setDate(d.getDate() - 1);
             const deliveryStr = d.toISOString().split('T')[0];
             document.getElementById('deliveryDate').value = deliveryStr;
 
-            // Scroll to form
+            closeCalendarModal();
+            
+            // Scroll ke borang tempahan
             document.getElementById('tempahan').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -454,11 +467,6 @@
 
             window.open(`https://wa.me/60126220913?text=${text}`, '_blank');
         }
-
-        // Initialize calendar on load
-        window.onload = function() {
-            renderCalendar();
-        };
     </script>
 </body>
 </html>
