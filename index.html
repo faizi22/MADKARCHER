@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MADKARCHER | Perkhidmatan Sewa Vacuum Kärcher Professional</title>
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -26,6 +26,8 @@
     </script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-karcher-black text-gray-100 font-sans antialiased">
 
@@ -45,14 +47,12 @@
                 <a href="#pakej" class="hover:text-karcher-yellow transition">Pakej & Harga</a>
                 <a href="#kegunaan" class="hover:text-karcher-yellow transition">Kegunaan</a>
                 
-                <!-- Tab Semak Kalendar -->
                 <button onclick="openCalendarModal()" class="text-karcher-yellow font-bold hover:underline flex items-center gap-1">
                     <i class="fa-regular fa-calendar-days"></i> Semak Kalendar
                 </button>
                 
                 <a href="#tempahan" class="hover:text-karcher-yellow transition">Borang Tempahan</a>
                 
-                <!-- TAB BARU: ADMIN PANEL -->
                 <button onclick="openAdminModal()" class="bg-karcher-gray hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border border-gray-600">
                     <i class="fa-solid fa-lock text-karcher-yellow"></i> Admin Panel
                 </button>
@@ -65,63 +65,34 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-b from-karcher-dark to-karcher-black py-16 lg:py-24 border-b border-karcher-gray">
+    <section class="relative bg-gradient-to-b from-karcher-dark to-karcher-black py-16 border-b border-karcher-gray">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
             <div class="space-y-6">
                 <div class="inline-flex items-center gap-2 bg-karcher-yellow/10 border border-karcher-yellow/30 text-karcher-yellow px-4 py-1.5 rounded-full text-sm font-semibold">
                     <i class="fa-solid fa-bolt"></i> PROMO SEWAAN RM90 / 24 JAM
                 </div>
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight">
+                <h1 class="text-4xl sm:text-5xl font-black text-white leading-tight">
                     DEEP CLEANING <span class="text-karcher-yellow">DIY</span> UNTUK RUMAH & KERETA
                 </h1>
                 <p class="text-gray-300 text-lg">
-                    Sewa mesin vakum *spray-extraction* Kärcher professional. Hapuskan 99% kuman, habuk, hama, dan bulu kucing pada sofa, tilam, karpet, dan kusyen kereta anda dengan mudah.
+                    Sewa mesin vakum *spray-extraction* Kärcher professional. Hapuskan 99% kuman, habuk, hama, dan bulu kucing.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                    <a href="#tempahan" class="bg-karcher-yellow hover:bg-karcher-yellowHover text-karcher-black font-extrabold px-8 py-4 rounded-xl text-center text-lg transition shadow-lg shadow-karcher-yellow/20">
+                    <a href="#tempahan" class="bg-karcher-yellow text-karcher-black font-extrabold px-8 py-4 rounded-xl text-center text-lg hover:bg-karcher-yellowHover transition">
                         Sewa Sekarang (RM90/Hari)
                     </a>
-                    <button onclick="openCalendarModal()" class="border border-karcher-yellow text-karcher-yellow hover:bg-karcher-yellow hover:text-karcher-black font-bold px-8 py-4 rounded-xl text-center text-lg transition flex items-center justify-center gap-2">
+                    <button onclick="openCalendarModal()" class="border border-karcher-yellow text-karcher-yellow font-bold px-8 py-4 rounded-xl text-center text-lg hover:bg-karcher-yellow hover:text-karcher-black transition flex items-center justify-center gap-2">
                         <i class="fa-regular fa-calendar-check"></i>
                         <span>Semak Tarikh Available</span>
                     </button>
                 </div>
             </div>
-            <!-- Equipment Icon Box -->
-            <div class="bg-karcher-dark border border-karcher-yellow/30 rounded-2xl p-12 text-center shadow-2xl flex flex-col items-center justify-center min-h-[350px]">
-                <div class="w-24 h-24 bg-karcher-yellow/10 rounded-full flex items-center justify-center text-karcher-yellow text-5xl mb-6 border border-karcher-yellow/20">
+            <div class="bg-karcher-dark border border-karcher-yellow/30 rounded-2xl p-12 text-center shadow-2xl flex flex-col items-center justify-center min-h-[300px]">
+                <div class="w-20 h-20 bg-karcher-yellow/10 rounded-full flex items-center justify-center text-karcher-yellow text-4xl mb-4 border border-karcher-yellow/20">
                     <i class="fa-solid fa-broom"></i>
                 </div>
-                <h3 class="text-2xl font-black text-white">KÄRCHER PUZZI PROFESSIONAL</h3>
-                <p class="text-gray-400 text-sm mt-2">Mesin Spray-Extraction Berkuasa Tinggi</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Kegunaan Section -->
-    <section id="kegunaan" class="py-16 bg-karcher-dark border-b border-karcher-gray">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-3xl sm:text-4xl font-black text-white">KEGUNAAN MESIN VACUUM</h2>
-                <p class="text-gray-400 mt-3">Sesuai untuk anda yang membela kucing atau mempunyai anak kecil di rumah.</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-karcher-black rounded-xl p-6 border border-karcher-gray hover:border-karcher-yellow/50 transition">
-                    <div class="text-karcher-yellow text-3xl mb-4"><i class="fa-solid fa-couch"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-2">Karpet & Sofa</h3>
-                    <p class="text-gray-400 text-sm">Menyedut bulu haiwan, debu halus, dan kotoran degil yang terperangkap di dalam serat fabrik sofa atau karpet ruang tamu.</p>
-                </div>
-                <div class="bg-karcher-black rounded-xl p-6 border border-karcher-gray hover:border-karcher-yellow/50 transition">
-                    <div class="text-karcher-yellow text-3xl mb-4"><i class="fa-solid fa-bed"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-2">Tilam / Mattress</h3>
-                    <p class="text-gray-400 text-sm">Membersih secara mendalam untuk menghilangkan hama, peluh, dan bau hapak pada tilam demi kesihatan keluarga.</p>
-                </div>
-                <div class="bg-karcher-black rounded-xl p-6 border border-karcher-gray hover:border-karcher-yellow/50 transition">
-                    <div class="text-karcher-yellow text-3xl mb-4"><i class="fa-solid fa-car"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-2">Kusyen Kereta</h3>
-                    <p class="text-gray-400 text-sm">Kembalikan kesegaran tempat duduk kereta anda seperti baru dengan proses cucian semburan dan sedutan serentak.</p>
-                </div>
+                <h3 class="text-xl font-black text-white">KÄRCHER PUZZI PROFESSIONAL</h3>
+                <p class="text-gray-400 text-xs mt-1">Mesin Spray-Extraction Berkuasa Tinggi</p>
             </div>
         </div>
     </section>
@@ -154,7 +125,7 @@
 
                     <div>
                         <label class="block text-sm font-semibold text-gray-300 mb-2">Alamat Penghantaran</label>
-                        <textarea id="custAddress" rows="3" required placeholder="Alamat penuh anda..." class="w-full bg-karcher-dark border border-karcher-gray focus:border-karcher-yellow text-white rounded-lg px-4 py-3 outline-none transition">D-0-12, Blok D, Taman Waja, 72000 Kuala Pilah, N.Sembilan</textarea>
+                        <textarea id="custAddress" rows="3" required class="w-full bg-karcher-dark border border-karcher-gray focus:border-karcher-yellow text-white rounded-lg px-4 py-3 outline-none transition">D-0-12, Blok D, Taman Waja, 72000 Kuala Pilah, N.Sembilan</textarea>
                     </div>
 
                     <div class="grid sm:grid-cols-2 gap-4">
@@ -162,7 +133,7 @@
                             <label class="block text-sm font-semibold text-gray-300 mb-2">Tarikh Mula Sewa</label>
                             <div class="flex gap-2">
                                 <input type="date" id="startDate" required class="w-full bg-karcher-dark border border-karcher-gray focus:border-karcher-yellow text-white rounded-lg px-4 py-3 outline-none transition">
-                                <button type="button" onclick="openCalendarModal()" class="bg-karcher-yellow text-karcher-black px-3 py-2 rounded-lg font-bold text-sm hover:bg-karcher-yellowHover transition flex items-center gap-1">
+                                <button type="button" onclick="openCalendarModal()" class="bg-karcher-yellow text-karcher-black px-3 py-2 rounded-lg font-bold text-sm hover:bg-karcher-yellowHover transition">
                                     <i class="fa-regular fa-calendar-days"></i>
                                 </button>
                             </div>
@@ -197,7 +168,7 @@
         </div>
     </section>
 
-    <!-- MODAL 1: KALENDAR KETERSEDIAAN PELANGGAN -->
+    <!-- MODAL 1: KALENDAR PELANGGAN -->
     <div id="calendarModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-karcher-dark border border-karcher-yellow/40 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
             <div class="flex justify-between items-center pb-4 mb-4 border-b border-karcher-gray">
@@ -234,89 +205,84 @@
             <div id="modalCalendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm"></div>
 
             <div class="mt-6 pt-4 border-t border-karcher-gray text-center">
-                <p class="text-xs text-gray-400 mb-3">Klik tarikh <span class="text-emerald-400 font-semibold">HIJAU</span> untuk isi borang secara automatik.</p>
                 <button onclick="closeCalendarModal()" class="bg-karcher-gray hover:bg-gray-700 text-white font-bold px-6 py-2 rounded-lg text-xs">Tutup Kalendar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 2: ADMIN MANAGEMENT PANEL (UNTUK KEMAS KINI TARIKH MERAH) -->
+    <!-- MODAL 2: ADMIN PANEL -->
     <div id="adminModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-karcher-dark border border-red-500/50 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
-            
             <div class="flex justify-between items-center pb-4 mb-4 border-b border-karcher-gray">
                 <div class="flex items-center gap-2">
                     <div class="bg-red-600 text-white p-2 rounded-lg"><i class="fa-solid fa-user-gear"></i></div>
                     <div>
                         <h3 class="text-lg font-black text-white">Panel Pentadbir (Admin)</h3>
-                        <p class="text-xs text-gray-400">Pengurusan Tarikh Booked / Un-Available</p>
+                        <p class="text-xs text-gray-400">Pengurusan Tarikh Realtime Supabase</p>
                     </div>
                 </div>
                 <button onclick="closeAdminModal()" class="text-gray-400 hover:text-white text-2xl font-bold px-2">&times;</button>
             </div>
 
-            <!-- Pin Authentication View -->
             <div id="adminLoginView" class="space-y-4 py-4">
-                <p class="text-sm text-gray-300">Sila masukkan PIN Admin untuk mengakses kawalan kalendar:</p>
-                <input type="password" id="adminPin" placeholder="Masukkan PIN (Default: 1234)" class="w-full bg-karcher-black border border-karcher-gray focus:border-karcher-yellow text-white rounded-lg px-4 py-3 outline-none text-center font-mono tracking-widest text-lg">
+                <p class="text-sm text-gray-300">Masukkan PIN Admin:</p>
+                <input type="password" id="adminPin" placeholder="PIN (Default: 1234)" class="w-full bg-karcher-black border border-karcher-gray text-white rounded-lg px-4 py-3 text-center font-mono text-lg">
                 <button onclick="verifyAdminPin()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg text-sm transition">
                     Pengesahan Masuk
                 </button>
             </div>
 
-            <!-- Admin Control View (After PIN) -->
             <div id="adminControlView" class="hidden space-y-6">
-                <!-- Form Key-In Tarikh -->
                 <div class="bg-karcher-black p-4 rounded-xl border border-karcher-gray space-y-3">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-karcher-yellow">Tambah Tarikh Un-Available / Booked</label>
+                    <label class="block text-xs font-bold uppercase text-karcher-yellow">Tambah Tarikh Booked</label>
                     <div class="flex gap-2">
-                        <input type="date" id="newBookedDate" class="w-full bg-karcher-dark border border-karcher-gray text-white text-sm rounded-lg px-3 py-2 outline-none">
-                        <button onclick="addBookedDate()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition whitespace-nowrap">
+                        <input type="date" id="newBookedDate" class="w-full bg-karcher-dark border border-karcher-gray text-white text-sm rounded-lg px-3 py-2">
+                        <button onclick="addBookedDateSupabase()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-lg whitespace-nowrap">
                             + Tandakan Merah
                         </button>
                     </div>
                 </div>
 
-                <!-- Senarai Tarikh Merah -->
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Senarai Tarikh Yang Ditandakan Booked (Merah):</h4>
-                    <div id="adminDateList" class="max-h-48 overflow-y-auto space-y-1.5 pr-1">
-                        <!-- Dynamic list populated by JS -->
-                    </div>
+                    <h4 class="text-xs font-bold uppercase text-gray-400 mb-2">Senarai Tarikh Booked (Database):</h4>
+                    <div id="adminDateList" class="max-h-48 overflow-y-auto space-y-1.5 pr-1"></div>
                 </div>
 
-                <div class="pt-4 border-t border-karcher-gray flex justify-between items-center">
-                    <span class="text-[11px] text-gray-400">Kemas kini disimpan automatik pada browser.</span>
+                <div class="pt-4 border-t border-karcher-gray flex justify-end">
                     <button onclick="closeAdminModal()" class="bg-karcher-yellow text-karcher-black font-bold px-4 py-2 rounded-lg text-xs">Selesai</button>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-karcher-dark border-t border-karcher-gray py-8 text-center text-xs text-gray-500">
-        <p>&copy; 2026 MADKARCHER / KILOFOXTROT. Hak Cipta Terpelihara.</p>
-        <p class="mt-1">Hubungi: +6012-6220913 | TikTok: @MADKARCHER</p>
-    </footer>
-
-    <!-- JavaScript Logic -->
+    <!-- JavaScript + Supabase Integration -->
     <script>
-        let currentDisplayDate = new Date(2026, 9, 1); // Oktober 2026
-        
-        // Default booked dates
-        let unavailableDates = [
-            '2026-10-10', 
-            '2026-10-11', 
-            '2026-10-17', 
-            '2026-10-18', 
-            '2026-10-24'
-        ];
+        // --- TETAPKAN MAKLUMAT SUPABASE ANDA DI SINI ---
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // --- CALENDAR MODAL LOGIC ---
+        let currentDisplayDate = new Date(2026, 9, 1);
+        let unavailableDates = [];
+
+        // Tarik data tarikh booked secara terus dari Supabase apabila web dibuka
+        async function fetchBookedDatesFromSupabase() {
+            try {
+                const { data, error } = await _supabase.from('booked_dates').select('date_str');
+                if (error) throw error;
+                if (data) {
+                    unavailableDates = data.map(item => item.date_str);
+                    renderModalCalendar();
+                    renderAdminDateList();
+                }
+            } catch (err) {
+                console.error("Gagal mengambil data dari Supabase:", err.message);
+            }
+        }
+
         function openCalendarModal() {
             document.getElementById('calendarModal').classList.remove('hidden');
-            renderModalCalendar();
+            fetchBookedDatesFromSupabase();
         }
 
         function closeCalendarModal() {
@@ -350,11 +316,9 @@
                 const isUnavailable = unavailableDates.includes(dateStr);
 
                 if (isUnavailable) {
-                    // Warna MERAH jika Booked/Un-Available
                     cell.className = "h-10 rounded-lg bg-red-600/30 border border-red-600 text-red-300 font-bold flex flex-col items-center justify-center cursor-not-allowed text-xs";
                     cell.innerHTML = `<span>${day}</span><span class="text-[8px] text-red-400 font-black uppercase">Penuh</span>`;
                 } else {
-                    // Warna HIJAU jika Available
                     cell.className = "h-10 rounded-lg bg-emerald-950/40 border border-emerald-600/60 text-emerald-300 font-bold flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-600 hover:text-white transition text-xs";
                     cell.innerHTML = `<span>${day}</span>`;
                     cell.onclick = () => selectCalendarDate(dateStr);
@@ -373,14 +337,12 @@
             document.getElementById('startDate').value = dateStr;
             const d = new Date(dateStr);
             d.setDate(d.getDate() - 1);
-            const deliveryStr = d.toISOString().split('T')[0];
-            document.getElementById('deliveryDate').value = deliveryStr;
-
+            document.getElementById('deliveryDate').value = d.toISOString().split('T')[0];
             closeCalendarModal();
             document.getElementById('tempahan').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // --- ADMIN PANEL LOGIC ---
+        // --- ADMIN SUPABASE ACTIONS ---
         function openAdminModal() {
             document.getElementById('adminModal').classList.remove('hidden');
         }
@@ -394,34 +356,33 @@
             if (pin === "1234") {
                 document.getElementById('adminLoginView').classList.add('hidden');
                 document.getElementById('adminControlView').classList.remove('hidden');
-                renderAdminDateList();
+                fetchBookedDatesFromSupabase();
             } else {
-                alert("PIN Admin Salah. Sila cuba lagi.");
+                alert("PIN Admin Salah!");
             }
         }
 
-        function addBookedDate() {
+        async function addBookedDateSupabase() {
             const dateVal = document.getElementById('newBookedDate').value;
-            if (!dateVal) {
-                alert("Sila pilih tarikh terlebih dahulu.");
-                return;
-            }
+            if (!dateVal) return alert("Pilih tarikh dahulu.");
 
-            if (!unavailableDates.includes(dateVal)) {
-                unavailableDates.push(dateVal);
-                unavailableDates.sort();
-                renderAdminDateList();
-                renderModalCalendar(); // Real-time update kalendar pelanggan
-                document.getElementById('newBookedDate').value = '';
+            const { error } = await _supabase.from('booked_dates').insert([{ date_str: dateVal }]);
+            if (error) {
+                alert("Gagal atau tarikh sudah wujud: " + error.message);
             } else {
-                alert("Tarikh ini sudah pun berada dalam senarai ditanda MERAH.");
+                alert("Tarikh " + dateVal + " berjaya ditanda MERAH di semua phone!");
+                document.getElementById('newBookedDate').value = '';
+                fetchBookedDatesFromSupabase();
             }
         }
 
-        function removeBookedDate(dateStr) {
-            unavailableDates = unavailableDates.filter(d => d !== dateStr);
-            renderAdminDateList();
-            renderModalCalendar(); // Real-time update kalendar pelanggan
+        async function removeBookedDateSupabase(dateStr) {
+            const { error } = await _supabase.from('booked_dates').delete().eq('date_str', dateStr);
+            if (error) {
+                alert("Gagal memadam: " + error.message);
+            } else {
+                fetchBookedDatesFromSupabase();
+            }
         }
 
         function renderAdminDateList() {
@@ -429,7 +390,7 @@
             listContainer.innerHTML = '';
 
             if (unavailableDates.length === 0) {
-                listContainer.innerHTML = '<p class="text-xs text-gray-500 italic">Tiada tarikh ditanda merah lagi.</p>';
+                listContainer.innerHTML = '<p class="text-xs text-gray-500 italic">Tiada tarikh ditanda merah.</p>';
                 return;
             }
 
@@ -438,7 +399,7 @@
                 item.className = "flex justify-between items-center bg-karcher-black p-2.5 rounded-lg border border-karcher-gray text-xs";
                 item.innerHTML = `
                     <span class="text-white font-mono"><i class="fa-solid fa-calendar-xmark text-red-500 mr-2"></i>${dateStr}</span>
-                    <button onclick="removeBookedDate('${dateStr}')" class="text-red-400 hover:text-white text-xs px-2 py-1 rounded bg-red-950/50 hover:bg-red-600 transition">
+                    <button onclick="removeBookedDateSupabase('${dateStr}')" class="text-red-400 hover:text-white text-xs px-2 py-1 rounded bg-red-950/50 hover:bg-red-600 transition">
                         <i class="fa-solid fa-trash"></i> Padam
                     </button>
                 `;
@@ -446,16 +407,11 @@
             });
         }
 
-        // --- FORM CALCULATIONS ---
         function calculateTotal() {
             const days = parseInt(document.getElementById('rentalDays').value) || 1;
-            const ratePerDay = 90;
-            const deposit = 50;
-            const rentalTotal = days * ratePerDay;
-            const grandTotal = rentalTotal + deposit;
-
+            const rentalTotal = days * 90;
             document.getElementById('rentalFeeText').innerText = `RM ${rentalTotal.toFixed(2)}`;
-            document.getElementById('totalAmountText').innerText = `RM ${grandTotal.toFixed(2)}`;
+            document.getElementById('totalAmountText').innerText = `RM ${(rentalTotal + 50).toFixed(2)}`;
         }
 
         function handleFormSubmit(e) {
@@ -479,7 +435,11 @@
 
             window.open(`https://wa.me/60126220913?text=${text}`, '_blank');
         }
+
+        // Muat turun data secara automatik apabila laman web mula dibalas
+        window.onload = function() {
+            fetchBookedDatesFromSupabase();
+        };
     </script>
 </body>
 </html>
-
