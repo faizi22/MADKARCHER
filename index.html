@@ -255,7 +255,7 @@
         </div>
     </div>
 
-    <!-- JavaScript + Supabase Integration -->
+   <!-- JavaScript + Supabase Integration -->
     <script>
         // --- MAKLUMAT SUPABASE ANDA ---
         const SUPABASE_URL = 'https://ofqzvwpclohqlddazvbp.supabase.co';
@@ -263,8 +263,9 @@
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let currentDisplayDate = new Date(2026, 9, 1);
+        let currentDisplayDate = new Date(); // Bermula terus pada bulan semasa
         let unavailableDates = [];
+        let isAdminLoggedIn = false; // Penanda sama ada admin sudah login atau belum
 
         async function fetchBookedDatesFromSupabase() {
             try {
@@ -282,6 +283,8 @@
 
         function openCalendarModal() {
             document.getElementById('calendarModal').classList.remove('hidden');
+            // Reset balik ke bulan semasa setiap kali pelanggan buka kalendar
+            currentDisplayDate = new Date();
             fetchBookedDatesFromSupabase();
         }
 
@@ -292,6 +295,7 @@
         function renderModalCalendar() {
             const grid = document.getElementById('modalCalendarGrid');
             const monthHeader = document.getElementById('modalMonthYear');
+            const prevBtn = document.getElementById('prevMonthBtn'); // Butang bulan lepas
             grid.innerHTML = '';
 
             const year = currentDisplayDate.getFullYear();
@@ -299,6 +303,16 @@
 
             const monthNames = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
             monthHeader.innerText = `${monthNames[month]} ${year}`;
+
+            // SYARAT: Jika BUKAN admin, sekat atau sembunyikan butang "Lepas" jika sudah berada di bulan semasa (atau lebih awal)
+            const now = new Date();
+            const isCurrentOrPastMonth = (year < now.getFullYear()) || (year === now.getFullYear() && month <= now.getMonth());
+
+            if (!isAdminLoggedIn && isCurrentOrPastMonth) {
+                prevBtn.style.display = 'none'; // Pelanggan tak nampak butang "Lepas" untuk bulan lepas
+            } else {
+                prevBtn.style.display = 'inline-block'; // Admin boleh nampak & klik
+            }
 
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDays = new Date(year, month + 1, 0).getDate();
@@ -314,8 +328,19 @@
                 const cell = document.createElement('div');
                 
                 const isUnavailable = unavailableDates.includes(dateStr);
+                
+                // Semak juga jika tarikh itu adalah tarikh lepas (past date) untuk pelanggan
+                const cellDate = new Date(year, month, day);
+                cellDate.setHours(0,0,0,0);
+                const todayMidnight = new Date();
+                todayMidnight.setHours(0,0,0,0);
+                const isPastDate = !isAdminLoggedIn && cellDate < todayMidnight;
 
-                if (isUnavailable) {
+                if (isPastDate) {
+                    // Tarikh lepas dimalapkan untuk pelanggan
+                    cell.className = "h-10 rounded-lg bg-karcher-gray/20 border border-gray-800 text-gray-600 font-bold flex flex-col items-center justify-center cursor-not-allowed text-xs opacity-40";
+                    cell.innerHTML = `<span>${day}</span>`;
+                } else if (isUnavailable) {
                     cell.className = "h-10 rounded-lg bg-red-600/30 border border-red-600 text-red-300 font-bold flex flex-col items-center justify-center cursor-not-allowed text-xs";
                     cell.innerHTML = `<span>${day}</span><span class="text-[8px] text-red-400 font-black uppercase">Penuh</span>`;
                 } else {
@@ -329,7 +354,18 @@
         }
 
         function changeMonth(step) {
-            currentDisplayDate.setMonth(currentDisplayDate.getMonth() + step);
+            const now = new Date();
+            const targetDate = new Date(currentDisplayDate);
+            targetDate.setMonth(targetDate.getMonth() + step);
+
+            // Jika pelanggan cuba pergi ke bulan lepas daripada bulan semasa, halang tindakan tersebut
+            if (!isAdminLoggedIn && step < 0) {
+                if (targetDate.getFullYear() < now.getFullYear() || (targetDate.getFullYear() === now.getFullYear() && targetDate.getMonth() < now.getMonth())) {
+                    return; // Hentikan fungsi, jangan tukar bulan
+                }
+            }
+
+            currentDisplayDate = targetDate;
             renderModalCalendar();
         }
 
@@ -353,9 +389,11 @@
         function verifyAdminPin() {
             const pin = document.getElementById('adminPin').value;
             if (pin === "1234") {
+                isAdminLoggedIn = true; // Status admin diaktifkan
                 document.getElementById('adminLoginView').classList.add('hidden');
                 document.getElementById('adminControlView').classList.remove('hidden');
                 fetchBookedDatesFromSupabase();
+                alert("Log masuk Admin berjaya! Anda kini boleh melihat semua arkib bulan-bulan lepas.");
             } else {
                 alert("PIN Admin Salah!");
             }
@@ -369,7 +407,7 @@
             if (error) {
                 alert("Gagal atau tarikh sudah wujud: " + error.message);
             } else {
-                alert("Tarikh " + dateVal + " berjaya ditanda MERAH di semua phone!");
+                alert("Tarikh " + dateVal + " berjaya ditanda MERAH!");
                 document.getElementById('newBookedDate').value = '';
                 fetchBookedDatesFromSupabase();
             }
