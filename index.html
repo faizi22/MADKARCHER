@@ -257,15 +257,15 @@
 
     <!-- JavaScript + Supabase Integration -->
     <script>
-        // --- TETAPKAN MAKLUMAT SUPABASE YANG BETUL DI SINI ---
+        // --- MAKLUMAT SUPABASE ANDA ---
         const SUPABASE_URL = 'https://ofqzvwpclohqlddazvbp.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_kRYisDu336yV9XCc6ZwTZg_ZwYQrClw';
-        const _supabase = supabase.createClient(https://ofqzvwpclohqlddazvbp.supabase.co/rest/v1/,sb_publishable_kRYisDu336yV9XCc6ZwTZg_ZwYQrClw);
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mcXp2d3BjbG9ocWxkZGF6dmJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwMDAwMDAsImV4cCI6MjA1NTU1NTU1MH0... (Gantikan dengan Legacy Anon Key anda dari Supabase)';
+        
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentDisplayDate = new Date(2026, 9, 1);
         let unavailableDates = [];
 
-        // Tarik data tarikh booked secara terus dari Supabase apabila web dibuka
         async function fetchBookedDatesFromSupabase() {
             try {
                 const { data, error } = await _supabase.from('booked_dates').select('date_str');
@@ -342,7 +342,6 @@
             document.getElementById('tempahan').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // --- ADMIN SUPABASE ACTIONS ---
         function openAdminModal() {
             document.getElementById('adminModal').classList.remove('hidden');
         }
