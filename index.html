@@ -257,10 +257,10 @@
 
     <!-- JavaScript + Supabase Integration -->
     <script>
-        // --- TETAPKAN MAKLUMAT SUPABASE ANDA DI SINI ---
-        const SUPABASE_URL = 'https://ofqzvwpclohqlddazvbp.supabase.co/rest/v1/';
-        const SUPABASE_ANON_KEY = 'sb_publishable_kRYisDu336yV9XCc6ZwTZg_ZwYQrClw';
-        const _supabase = supabase.createClient(https://ofqzvwpclohqlddazvbp.supabase.co/rest/v1/, sb_secret_0jcHtZoT-HyazzmgJOmECA_yiVGxky9);
+        // --- TETAPKAN MAKLUMAT SUPABASE YANG BETUL DI SINI ---
+        const SUPABASE_URL = 'https://ofqzvwpclohqlddazvbp.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... (Salin Legacy Anon Key anda di sini)';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentDisplayDate = new Date(2026, 9, 1);
         let unavailableDates = [];
@@ -436,7 +436,6 @@
             window.open(`https://wa.me/60126220913?text=${text}`, '_blank');
         }
 
-        // Muat turun data secara automatik apabila laman web mula dibalas
         window.onload = function() {
             fetchBookedDatesFromSupabase();
         };
