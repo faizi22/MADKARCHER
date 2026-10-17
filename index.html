@@ -102,13 +102,13 @@
             <nav class="hidden lg:flex items-center space-x-7 text-sm font-semibold">
                 <a href="#pakej" class="text-gray-300 hover:text-karcher-yellow transition">Senarai Pakej</a>
                 <a href="#cara-guna" class="text-gray-300 hover:text-karcher-yellow transition">Cara Sewa</a>
-                <button onclick="openCalendarModal()" class="text-karcher-yellow hover:text-white transition flex items-center gap-2 bg-karcher-yellow/10 border border-karcher-yellow/30 px-3.5 py-2 rounded-xl">
+                <button type="button" onclick="openCalendarModal()" class="text-karcher-yellow hover:text-white transition flex items-center gap-2 bg-karcher-yellow/10 border border-karcher-yellow/30 px-3.5 py-2 rounded-xl">
                     <i class="fa-regular fa-calendar-check"></i>
                     <span>Kalendar Live</span>
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                 </button>
                 <a href="#tempahan" class="text-gray-300 hover:text-karcher-yellow transition">Borang Tempahan</a>
-                <button onclick="openAdminModal()" class="relative bg-karcher-card hover:bg-red-950/60 text-gray-300 hover:text-red-400 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 border border-karcher-border hover:border-red-500/40">
+                <button type="button" onclick="openAdminModal()" class="relative bg-karcher-card hover:bg-red-950/60 text-gray-300 hover:text-red-400 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 border border-karcher-border hover:border-red-500/40">
                     <i class="fa-solid fa-shield-halved text-karcher-yellow"></i>
                     <span>Admin</span>
                     <span id="navPendingBadge" class="hidden bg-amber-500 text-karcher-black text-[10px] font-black px-1.5 py-0.2 rounded-full">0</span>
@@ -116,10 +116,10 @@
             </nav>
 
             <div class="flex items-center gap-2.5">
-                <button onclick="openCalendarModal()" class="lg:hidden bg-karcher-card border border-karcher-yellow/40 text-karcher-yellow p-2.5 rounded-xl text-sm">
+                <button type="button" onclick="openCalendarModal()" class="lg:hidden bg-karcher-card border border-karcher-yellow/40 text-karcher-yellow p-2.5 rounded-xl text-sm">
                     <i class="fa-regular fa-calendar-days"></i>
                 </button>
-                <button onclick="openAdminModal()" class="relative lg:hidden bg-karcher-card border border-karcher-border text-gray-300 p-2.5 rounded-xl text-sm">
+                <button type="button" onclick="openAdminModal()" class="relative lg:hidden bg-karcher-card border border-karcher-border text-gray-300 p-2.5 rounded-xl text-sm">
                     <i class="fa-solid fa-lock text-karcher-yellow"></i>
                     <span id="navPendingBadgeMobile" class="hidden absolute -top-1.5 -right-1.5 bg-amber-500 text-karcher-black text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
                 </button>
@@ -172,7 +172,7 @@
                             <span>Tempah Slot Sekarang</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </a>
-                        <button onclick="openCalendarModal()" class="bg-karcher-card hover:bg-karcher-gray border border-karcher-yellow/40 text-white font-bold px-7 py-4 rounded-xl text-center text-base transition flex items-center justify-center gap-2.5">
+                        <button type="button" onclick="openCalendarModal()" class="bg-karcher-card hover:bg-karcher-gray border border-karcher-yellow/40 text-white font-bold px-7 py-4 rounded-xl text-center text-base transition flex items-center justify-center gap-2.5">
                             <i class="fa-regular fa-calendar-days text-karcher-yellow"></i>
                             <span>Semak Tarikh Kosong</span>
                         </button>
@@ -193,7 +193,7 @@
 
                         <div class="mt-5 pt-4 border-t border-karcher-border flex items-center justify-between text-xs text-gray-400">
                             <span><i class="fa-solid fa-bolt text-karcher-yellow mr-1"></i> Slot dikunci automatik sebaik borang dihantar</span>
-                            <button onclick="openCalendarModal()" class="text-karcher-yellow font-bold hover:underline">Lihat Kalendar &rarr;</button>
+                            <button type="button" onclick="openCalendarModal()" class="text-karcher-yellow font-bold hover:underline">Lihat Kalendar &rarr;</button>
                         </div>
                     </div>
                 </div>
@@ -498,23 +498,23 @@
                         <i class="fa-regular fa-calendar-check text-karcher-yellow"></i> Kalendar Ketersediaan Set
                     </h3>
                 </div>
-                <button onclick="closeCalendarModal()" class="w-8 h-8 rounded-lg bg-karcher-card text-gray-400 hover:text-white flex items-center justify-center text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeCalendarModal()" class="w-8 h-8 rounded-lg bg-karcher-card text-gray-400 hover:text-white flex items-center justify-center text-xl font-bold">&times;</button>
             </div>
 
             <div class="flex items-center justify-between gap-2 mb-4 bg-karcher-black p-2 rounded-xl border border-karcher-border">
                 <span class="text-xs font-bold text-gray-400 pl-2">Tapis Paparan:</span>
                 <div class="flex gap-1.5">
-                    <button onclick="setCalendarFilter('ALL')" id="calFilter-ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-karcher-yellow text-karcher-black transition">Semua</button>
-                    <button onclick="setCalendarFilter('Set A')" id="calFilter-SetA" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-karcher-card text-gray-300 hover:text-white transition">Set A</button>
-                    <button onclick="setCalendarFilter('Set B')" id="calFilter-SetB" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-karcher-card text-gray-300 hover:text-white transition">Set B</button>
-                    <button onclick="setCalendarFilter('Set C')" id="calFilter-SetC" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-karcher-card text-gray-300 hover:text-white transition">Set C</button>
+                    <button type="button" onclick="setCalendarFilter('ALL')" id="calFilter-ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-karcher-yellow text-karcher-black transition">Semua</button>
+                    <button type="button" onclick="setCalendarFilter('Set A')" id="calFilter-SetA" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-karcher-card text-gray-300 hover:text-white transition">Set A</button>
+                    <button type="button" onclick="setCalendarFilter('Set B')" id="calFilter-SetB" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-karcher-card text-gray-300 hover:text-white transition">Set B</button>
+                    <button type="button" onclick="setCalendarFilter('Set C')" id="calFilter-SetC" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-karcher-card text-gray-300 hover:text-white transition">Set C</button>
                 </div>
             </div>
 
             <div class="flex justify-between items-center mb-3 bg-karcher-black px-3 py-2.5 rounded-xl border border-karcher-border">
-                <button id="prevMonthBtn" onclick="changeMonth(-1)" class="text-karcher-yellow hover:text-white font-bold px-3 py-1 text-xs bg-karcher-card rounded-lg">&larr; Lepas</button>
+                <button type="button" id="prevMonthBtn" onclick="changeMonth(-1)" class="text-karcher-yellow hover:text-white font-bold px-3 py-1 text-xs bg-karcher-card rounded-lg">&larr; Lepas</button>
                 <span id="modalMonthYear" class="text-white font-black text-base tracking-wide">Oktober 2026</span>
-                <button onclick="changeMonth(1)" class="text-karcher-yellow hover:text-white font-bold px-3 py-1 text-xs bg-karcher-card rounded-lg">Depan &rarr;</button>
+                <button type="button" onclick="changeMonth(1)" class="text-karcher-yellow hover:text-white font-bold px-3 py-1 text-xs bg-karcher-card rounded-lg">Depan &rarr;</button>
             </div>
 
             <div class="grid grid-cols-7 gap-1.5 text-center text-[11px] font-extrabold text-gray-400 uppercase mb-2">
@@ -524,7 +524,7 @@
             <div id="modalCalendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm"></div>
 
             <div class="mt-5 pt-4 border-t border-karcher-border flex justify-end">
-                <button onclick="closeCalendarModal()" class="bg-karcher-card hover:bg-karcher-gray text-white font-bold px-5 py-2 rounded-xl text-xs border border-karcher-border">Tutup</button>
+                <button type="button" onclick="closeCalendarModal()" class="bg-karcher-card hover:bg-karcher-gray text-white font-bold px-5 py-2 rounded-xl text-xs border border-karcher-border">Tutup</button>
             </div>
         </div>
     </div>
@@ -541,7 +541,7 @@
                         <p class="text-xs text-gray-400">Kelulusan, Resit PDF, WhatsApp Rasmi & Analisis Jualan</p>
                     </div>
                 </div>
-                <button onclick="closeAdminModal()" class="w-8 h-8 rounded-lg bg-karcher-card text-gray-400 hover:text-white flex items-center justify-center text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeAdminModal()" class="w-8 h-8 rounded-lg bg-karcher-card text-gray-400 hover:text-white flex items-center justify-center text-xl font-bold">&times;</button>
             </div>
 
             <!-- Login View -->
@@ -554,7 +554,7 @@
                     <p class="text-xs text-gray-400 mt-1">Masukkan PIN untuk mengakses sistem pengurusan (Default: 1234)</p>
                 </div>
                 <input type="password" id="adminPin" onkeydown="if(event.key==='Enter') verifyAdminPin()" placeholder="••••" class="w-full bg-karcher-black border border-karcher-border focus:border-red-500 text-white rounded-xl px-4 py-3 text-center font-mono text-xl tracking-widest outline-none">
-                <button onclick="verifyAdminPin()" class="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold py-3.5 rounded-xl text-sm transition">
+                <button type="button" onclick="verifyAdminPin()" class="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold py-3.5 rounded-xl text-sm transition">
                     Log Masuk Admin
                 </button>
             </div>
@@ -564,19 +564,19 @@
                 
                 <div class="flex flex-wrap items-center justify-between gap-2 border-b border-karcher-border pb-3">
                     <div class="flex flex-wrap gap-2">
-                        <button id="tabBtnPending" onclick="switchAdminTab('pending')" class="px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-yellow text-karcher-black transition flex items-center gap-2">
+                        <button type="button" id="tabBtnPending" onclick="switchAdminTab('pending')" class="px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-yellow text-karcher-black transition flex items-center gap-2">
                             <i class="fa-solid fa-bell"></i>
                             <span>Permohonan Pending</span>
                             <span id="tabPendingCountBadge" class="bg-karcher-black text-karcher-yellow px-2 py-0.5 rounded-full text-[10px] font-mono">0</span>
                         </button>
-                        <button id="tabBtnCalendar" onclick="switchAdminTab('calendar')" class="px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-card text-gray-400 hover:text-white border border-karcher-border transition">
+                        <button type="button" id="tabBtnCalendar" onclick="switchAdminTab('calendar')" class="px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-card text-gray-400 hover:text-white border border-karcher-border transition">
                             <i class="fa-solid fa-calendar-plus mr-1.5"></i> Pengurusan Slot Manual
                         </button>
-                        <button id="tabBtnDashboard" onclick="switchAdminTab('dashboard')" class="px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-card text-gray-400 hover:text-white border border-karcher-border transition">
+                        <button type="button" id="tabBtnDashboard" onclick="switchAdminTab('dashboard')" class="px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-card text-gray-400 hover:text-white border border-karcher-border transition">
                             <i class="fa-solid fa-chart-pie mr-1.5"></i> Dashboard Jualan & ROI
                         </button>
                     </div>
-                    <button onclick="exportBookingsToCSV()" class="px-3.5 py-2 text-xs font-bold rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-600 hover:text-white transition flex items-center gap-1.5">
+                    <button type="button" onclick="exportBookingsToCSV()" class="px-3.5 py-2 text-xs font-bold rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-600 hover:text-white transition flex items-center gap-1.5">
                         <i class="fa-solid fa-file-csv"></i> Export CSV
                     </button>
                 </div>
@@ -619,7 +619,7 @@
                                 <input type="tel" id="adminManualPhone" placeholder="0136442925" class="w-full bg-karcher-card border border-karcher-border text-white text-xs rounded-xl px-3.5 py-2.5 font-mono">
                             </div>
                             <div class="flex items-end">
-                                <button onclick="addBookedDateSupabase()" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-extrabold py-3 rounded-xl transition">
+                                <button type="button" onclick="addBookedDateSupabase()" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-extrabold py-3 rounded-xl transition">
                                     + Kunci Tarikh
                                 </button>
                             </div>
@@ -696,22 +696,23 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- JAVASCRIPT ENGINE                          -->
-    <!-- ========================================== -->
+    <!-- JAVASCRIPT ENGINE -->
     <script>
         const SUPABASE_URL = 'https://ofqzvwpclohqlddazvbp.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mcXp2d3BjbG9ocWxkZGF6dmJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4ODczNTEsImV4cCI6MjEwNzQ2MzM1MX0.hCArt7E-HP7yhsMC5JFlBLkcRUsVFYD4r1VB4Ddb0Nw';
 
         let _supabase = null;
         try {
-            if (typeof supabase !== 'undefined' && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('...')) {
-                _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                document.getElementById('dbConnectionBadge').innerText = "Supabase Cloud: Connected";
-                document.getElementById('dbConnectionBadge').className = "text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 whitespace-nowrap";
+            if (window.supabase && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('...')) {
+                _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const badge = document.getElementById('dbConnectionBadge');
+                if (badge) {
+                    badge.innerText = "Supabase Cloud: Connected";
+                    badge.className = "text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 whitespace-nowrap";
+                }
             }
         } catch(e) {
-            console.log("Mod simpanan tempatan (Local Fallback).");
+            console.log("Mod simpanan tempatan (Local Fallback Mode).");
         }
 
         let currentDisplayDate = new Date();
@@ -735,6 +736,7 @@
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
+            if (!container) return;
             const toast = document.createElement('div');
             
             const colors = {
@@ -945,21 +947,23 @@ Sebarang pertanyaan hubungi: 012-622 0913
         }
 
         function selectPackageFromCard(pkgValue) {
-            document.getElementById('packageSelect').value = pkgValue;
+            const pkgSelect = document.getElementById('packageSelect');
+            if (pkgSelect) pkgSelect.value = pkgValue;
             ['SetA', 'SetB', 'SetC'].forEach(id => {
                 const el = document.getElementById('card-' + id);
                 if (el) el.classList.remove('border-karcher-yellow', 'shadow-glow');
             });
-            if (pkgValue.includes('Set A')) document.getElementById('card-SetA').classList.add('border-karcher-yellow', 'shadow-glow');
-            if (pkgValue.includes('Set B')) document.getElementById('card-SetB').classList.add('border-karcher-yellow', 'shadow-glow');
-            if (pkgValue.includes('Set C')) document.getElementById('card-SetC').classList.add('border-karcher-yellow', 'shadow-glow');
+            if (pkgValue.includes('Set A')) document.getElementById('card-SetA')?.classList.add('border-karcher-yellow', 'shadow-glow');
+            if (pkgValue.includes('Set B')) document.getElementById('card-SetB')?.classList.add('border-karcher-yellow', 'shadow-glow');
+            if (pkgValue.includes('Set C')) document.getElementById('card-SetC')?.classList.add('border-karcher-yellow', 'shadow-glow');
 
             onFormInputChange();
-            document.getElementById('tempahan').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('tempahan')?.scrollIntoView({ behavior: 'smooth' });
         }
 
         function adjustDays(delta) {
             const input = document.getElementById('rentalDays');
+            if (!input) return;
             let val = (parseInt(input.value) || 1) + delta;
             if (val < 1) val = 1;
             if (val > 14) val = 14;
@@ -969,54 +973,71 @@ Sebarang pertanyaan hubungi: 012-622 0913
 
         function adjustSoap(delta) {
             soapQty = Math.max(0, Math.min(20, soapQty + delta));
-            document.getElementById('soapQtyText').innerText = soapQty;
+            const soapText = document.getElementById('soapQtyText');
+            if (soapText) soapText.innerText = soapQty;
             onFormInputChange();
         }
 
         function onStartDateChange() {
-            const startStr = document.getElementById('startDate').value;
+            const startInput = document.getElementById('startDate');
+            if (!startInput) return;
+            const startStr = startInput.value;
             if (startStr) {
                 const d = new Date(startStr);
                 d.setDate(d.getDate() - 1);
-                document.getElementById('deliveryDate').value = formatDateISO(d);
+                const delInput = document.getElementById('deliveryDate');
+                if (delInput) delInput.value = formatDateISO(d);
             }
             onFormInputChange();
         }
 
         function onFormInputChange() {
-            const packageVal = document.getElementById('packageSelect').value;
+            const pkgSelect = document.getElementById('packageSelect');
+            if (!pkgSelect) return;
+            const packageVal = pkgSelect.value;
             const [rateStr, pkgFullName] = packageVal.split('|');
             const rate = parseFloat(rateStr) || 65;
-            const days = parseInt(document.getElementById('rentalDays').value) || 1;
-            const brushChecked = document.getElementById('addonBrush').checked;
+            const days = parseInt(document.getElementById('rentalDays')?.value) || 1;
+            const brushChecked = document.getElementById('addonBrush')?.checked || false;
 
             const rentalTotal = days * rate;
             const addonTotal = (soapQty * 4.5) + (brushChecked ? 10 : 0);
             const deposit = 50;
             const grandTotal = rentalTotal + addonTotal + deposit;
 
-            document.getElementById('summaryPkgName').innerText = pkgFullName;
-            document.getElementById('summaryDuration').innerText = `${days} Hari`;
-            document.getElementById('rentalFeeText').innerText = `RM ${rentalTotal.toFixed(2)}`;
+            const summaryPkg = document.getElementById('summaryPkgName');
+            const summaryDur = document.getElementById('summaryDuration');
+            const rentalFee = document.getElementById('rentalFeeText');
+            const totalText = document.getElementById('totalAmountText');
+
+            if (summaryPkg) summaryPkg.innerText = pkgFullName;
+            if (summaryDur) summaryDur.innerText = `${days} Hari`;
+            if (rentalFee) rentalFee.innerText = `RM ${rentalTotal.toFixed(2)}`;
             
             const addonRow = document.getElementById('summaryAddonRow');
             if (addonTotal > 0) {
-                addonRow.classList.remove('hidden');
-                document.getElementById('addonFeeText').innerText = `RM ${addonTotal.toFixed(2)}`;
+                if (addonRow) addonRow.classList.remove('hidden');
+                const addonFee = document.getElementById('addonFeeText');
+                if (addonFee) addonFee.innerText = `RM ${addonTotal.toFixed(2)}`;
             } else {
-                addonRow.classList.add('hidden');
+                if (addonRow) addonRow.classList.add('hidden');
             }
 
-            document.getElementById('totalAmountText').innerText = `RM ${grandTotal.toFixed(2)}`;
+            if (totalText) totalText.innerText = `RM ${grandTotal.toFixed(2)}`;
             validateSelectedDateRange();
         }
 
         function validateSelectedDateRange() {
-            const startStr = document.getElementById('startDate').value;
-            const days = parseInt(document.getElementById('rentalDays').value) || 1;
-            const packageVal = document.getElementById('packageSelect').value;
+            const startInput = document.getElementById('startDate');
+            const daysInput = document.getElementById('rentalDays');
+            const pkgSelect = document.getElementById('packageSelect');
             const alertBox = document.getElementById('availabilityAlertBox');
             const submitBtn = document.getElementById('submitBtn');
+
+            if (!startInput || !alertBox || !submitBtn) return true;
+            const startStr = startInput.value;
+            const days = parseInt(daysInput?.value) || 1;
+            const packageVal = pkgSelect?.value || 'Set A';
 
             if (!startStr) {
                 alertBox.classList.add('hidden');
@@ -1066,10 +1087,10 @@ Sebarang pertanyaan hubungi: 012-622 0913
 
             const submitBtn = document.getElementById('submitBtn');
             const submitBtnText = document.getElementById('submitBtnText');
-            const originalText = submitBtnText.innerText;
+            const originalText = submitBtnText ? submitBtnText.innerText : "Kunci Tarikh";
 
-            submitBtn.disabled = true;
-            submitBtnText.innerText = "Mengunci Slot di Database...";
+            if (submitBtn) submitBtn.disabled = true;
+            if (submitBtnText) submitBtnText.innerText = "Mengunci Slot...";
 
             const packageVal = document.getElementById('packageSelect').value;
             const [rateStr, selectedPkg] = packageVal.split('|');
@@ -1114,21 +1135,17 @@ Sebarang pertanyaan hubungi: 012-622 0913
 
             if (_supabase) {
                 try {
-                    const { error } = await _supabase.from('booked_dates').insert(newRows);
-                    if (error) {
-                        const basicRows = newRows.map(r => ({ date_str: r.date_str, set_type: r.set_type }));
-                        await _supabase.from('booked_dates').insert(basicRows);
-                    }
+                    await _supabase.from('booked_dates').insert(newRows);
                 } catch (err) {
-                    console.error("Supabase error:", err);
+                    console.error("Supabase insert error:", err);
                 }
             }
 
             bookedRecords.push(...newRows);
             saveLocalBackup();
-            await fetchBookedDatesFromSupabase();
+            fetchBookedDatesFromSupabase();
 
-            showToast(`Slot ${setCode} (${bookingRef}) dikunci sebagai 'Pending Approval'! Membuka WhatsApp...`, "success");
+            showToast(`Slot ${setCode} (${bookingRef}) dikunci! Membuka WhatsApp...`, "success");
 
             const text = `*TEMPAHAN SEWAAN MADKARCHER*%0A` +
                          `*Rujukan:* ${bookingRef} _(Status: Pending Approval)_%0A` +
@@ -1146,17 +1163,22 @@ Sebarang pertanyaan hubungi: 012-622 0913
                          `*Jumlah Anggaran:* ${totalText}%0A%0A` +
                          `_Tarikh saya telah dikunci sementara. Berikut ialah pengesahan tempahan:_`;
 
-            submitBtnText.innerText = originalText;
+            if (submitBtnText) submitBtnText.innerText = originalText;
+            if (submitBtn) submitBtn.disabled = false;
             window.open(`https://wa.me/60126220913?text=${text}`, '_blank');
         }
 
         function openCalendarModal() {
-            document.getElementById('calendarModal').classList.remove('hidden');
-            fetchBookedDatesFromSupabase();
+            const modal = document.getElementById('calendarModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                renderModalCalendar();
+            }
         }
 
         function closeCalendarModal() {
-            document.getElementById('calendarModal').classList.add('hidden');
+            const modal = document.getElementById('calendarModal');
+            if (modal) modal.classList.add('hidden');
         }
 
         function setCalendarFilter(filterVal) {
@@ -1181,7 +1203,7 @@ Sebarang pertanyaan hubungi: 012-622 0913
             const year = currentDisplayDate.getFullYear();
             const month = currentDisplayDate.getMonth();
             const monthNames = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
-            monthHeader.innerText = `${monthNames[month]} ${year}`;
+            if (monthHeader) monthHeader.innerText = `${monthNames[month]} ${year}`;
 
             const now = new Date();
             const isCurrentOrPastMonth = (year < now.getFullYear()) || (year === now.getFullYear() && month <= now.getMonth());
@@ -1250,22 +1272,26 @@ Sebarang pertanyaan hubungi: 012-622 0913
         }
 
         function selectCalendarDate(dateStr, status) {
-            document.getElementById('startDate').value = dateStr;
+            const startInput = document.getElementById('startDate');
+            if (startInput) startInput.value = dateStr;
             const d = new Date(dateStr);
             d.setDate(d.getDate() - 1);
-            document.getElementById('deliveryDate').value = formatDateISO(d);
+            const delInput = document.getElementById('deliveryDate');
+            if (delInput) delInput.value = formatDateISO(d);
 
             const pkgSelect = document.getElementById('packageSelect');
-            if (!status.availA && status.availB) {
-                pkgSelect.value = "65|Set B - Waterjet";
-                showToast("Set A telah ditempah. Sistem mencadangkan Set B (Waterjet).", "info");
-            } else {
-                showToast(`Tarikh mula sewaan ditetapkan pada ${dateStr}`, "success");
+            if (pkgSelect) {
+                if (!status.availA && status.availB) {
+                    pkgSelect.value = "65|Set B - Waterjet";
+                    showToast("Set A telah ditempah. Sistem mencadangkan Set B (Waterjet).", "info");
+                } else {
+                    showToast(`Tarikh mula sewaan ditetapkan pada ${dateStr}`, "success");
+                }
             }
 
             closeCalendarModal();
             onFormInputChange();
-            document.getElementById('tempahan').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('tempahan')?.scrollIntoView({ behavior: 'smooth' });
         }
 
         async function fetchBookedDatesFromSupabase() {
@@ -1280,7 +1306,7 @@ Sebarang pertanyaan hubungi: 012-622 0913
                         saveLocalBackup();
                     }
                 } catch (err) {
-                    console.error("Supabase error:", err.message);
+                    console.error("Supabase fetch error:", err.message);
                 }
             }
             updatePendingNotificationBadges();
@@ -1309,19 +1335,22 @@ Sebarang pertanyaan hubungi: 012-622 0913
         }
 
         function openAdminModal() {
-            document.getElementById('adminModal').classList.remove('hidden');
+            const modal = document.getElementById('adminModal');
+            if (modal) modal.classList.remove('hidden');
         }
 
         function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
+            const modal = document.getElementById('adminModal');
+            if (modal) modal.classList.add('hidden');
         }
 
         function verifyAdminPin() {
-            const pin = document.getElementById('adminPin').value;
-            if (pin === "1234") {
+            const pinInput = document.getElementById('adminPin');
+            if (!pinInput) return;
+            if (pinInput.value === "1234") {
                 isAdminLoggedIn = true;
-                document.getElementById('adminLoginView').classList.add('hidden');
-                document.getElementById('adminControlView').classList.remove('hidden');
+                document.getElementById('adminLoginView')?.classList.add('hidden');
+                document.getElementById('adminControlView')?.classList.remove('hidden');
                 fetchBookedDatesFromSupabase();
                 showToast("Log masuk Admin berjaya!", "success");
             } else {
@@ -1340,11 +1369,11 @@ Sebarang pertanyaan hubungi: 012-622 0913
                 const b = document.getElementById(tabs[k].btn);
                 const c = document.getElementById(tabs[k].content);
                 if (k === tabName) {
-                    b.className = "px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-yellow text-karcher-black transition flex items-center gap-2";
-                    c.classList.remove('hidden');
+                    if (b) b.className = "px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-yellow text-karcher-black transition flex items-center gap-2";
+                    if (c) c.classList.remove('hidden');
                 } else {
-                    b.className = "px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-card text-gray-400 hover:text-white border border-karcher-border transition flex items-center gap-2";
-                    c.classList.add('hidden');
+                    if (b) b.className = "px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-card text-gray-400 hover:text-white border border-karcher-border transition flex items-center gap-2";
+                    if (c) c.classList.add('hidden');
                 }
             });
 
@@ -1356,12 +1385,10 @@ Sebarang pertanyaan hubungi: 012-622 0913
             }
         }
 
-        // FUNGSI DIBAIKI: Luluskan Tempahan & Paksa Kemaskini Kalendar serta LocalStorage
         async function approvePendingBooking(dateStr, setType, autoSendWA = false) {
             const targetRec = bookedRecords.find(r => r.date_str === dateStr && (r.set_type || 'Set A') === setType);
             const refCode = targetRec ? targetRec.booking_ref : null;
 
-            // 1. Kemaskini Rekod Dalam Memori
             bookedRecords = bookedRecords.map(r => {
                 if ((refCode && r.booking_ref === refCode) || (r.date_str === dateStr && (r.set_type || 'Set A') === setType)) {
                     return { ...r, status: 'Approved' };
@@ -1369,25 +1396,20 @@ Sebarang pertanyaan hubungi: 012-622 0913
                 return r;
             });
 
-            // 2. Simpan ke LocalStorage serta-merta
             saveLocalBackup();
 
-            // 3. Cuba Kemaskini ke Supabase
             if (_supabase) {
                 try {
-                    let res;
                     if (refCode) {
-                        res = await _supabase.from('booked_dates').update({ status: 'Approved' }).eq('booking_ref', refCode);
+                        await _supabase.from('booked_dates').update({ status: 'Approved' }).eq('booking_ref', refCode);
                     } else {
-                        res = await _supabase.from('booked_dates').update({ status: 'Approved' }).eq('date_str', dateStr).eq('set_type', setType);
+                        await _supabase.from('booked_dates').update({ status: 'Approved' }).eq('date_str', dateStr).eq('set_type', setType);
                     }
-                    if (res.error) console.warn("Supabase Update Warning:", res.error.message);
                 } catch (err) {
                     console.error("Supabase Error:", err);
                 }
             }
 
-            // 4. Paksa Kemaskini UI (Kalendar, Admin List & Badges)
             updatePendingNotificationBadges();
             renderTodayLiveStatus();
             renderModalCalendar();
@@ -1445,16 +1467,16 @@ Sebarang pertanyaan hubungi: 012-622 0913
                     </div>
 
                     <div class="flex flex-wrap sm:flex-nowrap gap-2 w-full lg:w-auto">
-                        <button onclick="downloadOfficialReceiptPDF('${rec.date_str}', '${st}')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs transition flex items-center gap-1">
+                        <button type="button" onclick="downloadOfficialReceiptPDF('${rec.date_str}', '${st}')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs transition flex items-center gap-1">
                             <i class="fa-solid fa-file-pdf"></i> Resit PDF
                         </button>
-                        <button onclick="approvePendingBooking('${rec.date_str}', '${st}', true)" class="bg-emerald-500 hover:bg-emerald-400 text-karcher-black font-black px-3.5 py-2.5 rounded-xl text-xs transition flex items-center gap-1 shadow-glow-emerald">
+                        <button type="button" onclick="approvePendingBooking('${rec.date_str}', '${st}', true)" class="bg-emerald-500 hover:bg-emerald-400 text-karcher-black font-black px-3.5 py-2.5 rounded-xl text-xs transition flex items-center gap-1 shadow-glow-emerald">
                             <i class="fa-brands fa-whatsapp"></i> Lulus + WA
                         </button>
-                        <button onclick="approvePendingBooking('${rec.date_str}', '${st}', false)" class="bg-karcher-card hover:bg-karcher-gray text-gray-200 border border-karcher-border font-bold px-3 py-2.5 rounded-xl text-xs transition flex items-center gap-1">
+                        <button type="button" onclick="approvePendingBooking('${rec.date_str}', '${st}', false)" class="bg-karcher-card hover:bg-karcher-gray text-gray-200 border border-karcher-border font-bold px-3 py-2.5 rounded-xl text-xs transition flex items-center gap-1">
                             <i class="fa-solid fa-check text-emerald-400"></i> Lulus
                         </button>
-                        <button onclick="removeBookedRecord('${rec.date_str}', '${st}')" class="bg-rose-950/70 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 font-bold px-3 py-2.5 rounded-xl text-xs transition flex items-center gap-1">
+                        <button type="button" onclick="removeBookedRecord('${rec.date_str}', '${st}')" class="bg-rose-950/70 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 font-bold px-3 py-2.5 rounded-xl text-xs transition flex items-center gap-1">
                             <i class="fa-solid fa-xmark"></i> Batal
                         </button>
                     </div>
@@ -1464,9 +1486,9 @@ Sebarang pertanyaan hubungi: 012-622 0913
         }
 
         async function addBookedDateSupabase() {
-            const dateVal = document.getElementById('newBookedDate').value;
-            const setTypeVal = document.getElementById('adminSetSelect').value;
-            const manualPhone = document.getElementById('adminManualPhone').value.trim();
+            const dateVal = document.getElementById('newBookedDate')?.value;
+            const setTypeVal = document.getElementById('adminSetSelect')?.value;
+            const manualPhone = document.getElementById('adminManualPhone')?.value.trim();
             if (!dateVal) return showToast("Sila pilih tarikh.", "error");
 
             const exists = bookedRecords.some(r => r.date_str === dateVal && r.set_type === setTypeVal);
@@ -1482,20 +1504,28 @@ Sebarang pertanyaan hubungi: 012-622 0913
             };
 
             if (_supabase) {
-                await _supabase.from('booked_dates').insert([newRec]);
+                try {
+                    await _supabase.from('booked_dates').insert([newRec]);
+                } catch(err) {
+                    console.error("Supabase Manual Insert Error:", err);
+                }
             }
 
             bookedRecords.push(newRec);
             saveLocalBackup();
-            document.getElementById('newBookedDate').value = '';
-            document.getElementById('adminManualPhone').value = '';
+            if (document.getElementById('newBookedDate')) document.getElementById('newBookedDate').value = '';
+            if (document.getElementById('adminManualPhone')) document.getElementById('adminManualPhone').value = '';
             fetchBookedDatesFromSupabase();
             showToast(`Rekod ${setTypeVal} dikunci sebagai Approved!`, "success");
         }
 
         async function removeBookedRecord(dateStr, setType) {
             if (_supabase) {
-                await _supabase.from('booked_dates').delete().match({ date_str: dateStr, set_type: setType });
+                try {
+                    await _supabase.from('booked_dates').delete().eq('date_str', dateStr).eq('set_type', setType);
+                } catch(err) {
+                    console.error("Supabase Delete Error:", err);
+                }
             }
             bookedRecords = bookedRecords.filter(r => !(r.date_str === dateStr && (r.set_type || 'Set A') === setType));
             saveLocalBackup();
@@ -1536,20 +1566,20 @@ Sebarang pertanyaan hubungi: 012-622 0913
                         <span class="text-gray-300 text-[11px] font-semibold">${record.cust_name || ''}</span>
                     </div>
                     <div class="flex items-center gap-1.5 w-full sm:w-auto justify-end flex-wrap">
-                        <button onclick="downloadOfficialReceiptPDF('${record.date_str}', '${st}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
+                        <button type="button" onclick="downloadOfficialReceiptPDF('${record.date_str}', '${st}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
                             <i class="fa-solid fa-file-pdf"></i> Resit PDF
                         </button>
                         ${isPend ? `
-                            <button onclick="approvePendingBooking('${record.date_str}', '${st}', true)" class="bg-emerald-500 text-karcher-black px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
+                            <button type="button" onclick="approvePendingBooking('${record.date_str}', '${st}', true)" class="bg-emerald-500 text-karcher-black px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
                                 <i class="fa-brands fa-whatsapp"></i> Lulus + WA
                             </button>
                         ` : ''}
                         ${hasPhone ? `
-                            <button onclick="sendCustomerConfirmationWA('${record.date_str}', '${st}')" class="bg-emerald-950/80 hover:bg-emerald-600 text-emerald-300 border border-emerald-500/40 px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
+                            <button type="button" onclick="sendCustomerConfirmationWA('${record.date_str}', '${st}')" class="bg-emerald-950/80 hover:bg-emerald-600 text-emerald-300 border border-emerald-500/40 px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
                                 <i class="fa-brands fa-whatsapp"></i> WA
                             </button>
                         ` : ''}
-                        <button onclick="removeBookedRecord('${record.date_str}', '${st}')" class="text-rose-400 hover:text-white px-2.5 py-1 rounded-lg bg-rose-950/50 hover:bg-rose-600 transition font-bold">
+                        <button type="button" onclick="removeBookedRecord('${record.date_str}', '${st}')" class="text-rose-400 hover:text-white px-2.5 py-1 rounded-lg bg-rose-950/50 hover:bg-rose-600 transition font-bold">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -1597,9 +1627,13 @@ Sebarang pertanyaan hubungi: 012-622 0913
             });
 
             const targetROI = 3000;
-            document.getElementById('totalBookedDays').innerText = `${approvedDaysCount} Hari`;
-            document.getElementById('totalSalesAmount').innerText = `RM ${approvedSales.toLocaleString()}`;
-            document.getElementById('pendingSalesAmount').innerText = `RM ${pendingSales.toLocaleString()}`;
+            const totalDaysEl = document.getElementById('totalBookedDays');
+            const totalSalesEl = document.getElementById('totalSalesAmount');
+            const pendingSalesEl = document.getElementById('pendingSalesAmount');
+
+            if (totalDaysEl) totalDaysEl.innerText = `${approvedDaysCount} Hari`;
+            if (totalSalesEl) totalSalesEl.innerText = `RM ${approvedSales.toLocaleString()}`;
+            if (pendingSalesEl) pendingSalesEl.innerText = `RM ${pendingSales.toLocaleString()}`;
 
             let highestSet = "Tiada Data";
             if (approvedDaysCount > 0) {
@@ -1607,19 +1641,23 @@ Sebarang pertanyaan hubungi: 012-622 0913
                 else if (countSetB >= countSetA && countSetB >= countSetC) highestSet = `Set B (Waterjet) • ${countSetB}x`;
                 else highestSet = `Set A (Vacuum) • ${countSetA}x`;
             }
-            document.getElementById('highestDemandSet').innerText = highestSet;
+            const highSetEl = document.getElementById('highestDemandSet');
+            if (highSetEl) highSetEl.innerText = highestSet;
 
             const percentage = Math.min(100, (approvedSales / targetROI) * 100);
-            document.getElementById('roiPercentage').innerText = `${percentage.toFixed(1)}%`;
-            document.getElementById('roiProgressBar').style.width = `${percentage}%`;
+            const roiPct = document.getElementById('roiPercentage');
+            const roiBar = document.getElementById('roiProgressBar');
+            if (roiPct) roiPct.innerText = `${percentage.toFixed(1)}%`;
+            if (roiBar) roiBar.style.width = `${percentage}%`;
 
             const remaining = targetROI - approvedSales;
-            document.getElementById('roiRemaining').innerText = remaining > 0 ? `RM ${remaining.toLocaleString()}` : `RM 0 (Target Tercapai!)`;
+            const roiRem = document.getElementById('roiRemaining');
+            if (roiRem) roiRem.innerText = remaining > 0 ? `RM ${remaining.toLocaleString()}` : `RM 0 (Target Tercapai!)`;
         }
 
         function renderMonthlyDemandChart() {
             const ctx = document.getElementById('monthlyDemandChart');
-            if (!ctx) return;
+            if (!ctx || typeof Chart === 'undefined') return;
 
             const monthNames = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogos", "Sep", "Okt", "Nov", "Dis"];
             const setAData = new Array(12).fill(0);
@@ -1665,7 +1703,7 @@ Sebarang pertanyaan hubungi: 012-622 0913
 
         function renderSetSalesPieChart() {
             const ctx = document.getElementById('setSalesPieChart');
-            if (!ctx) return;
+            if (!ctx || typeof Chart === 'undefined') return;
 
             let totalSalesA = 0, totalSalesB = 0, totalSalesC = 0;
             bookedRecords.filter(r => r.status !== 'Pending Approval').forEach(r => {
@@ -1701,7 +1739,8 @@ Sebarang pertanyaan hubungi: 012-622 0913
         window.onload = function() {
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
-            document.getElementById('startDate').value = formatDateISO(tomorrow);
+            const startInput = document.getElementById('startDate');
+            if (startInput) startInput.value = formatDateISO(tomorrow);
             onStartDateChange();
             fetchBookedDatesFromSupabase();
         };
