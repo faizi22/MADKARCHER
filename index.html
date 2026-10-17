@@ -286,7 +286,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: DASHBOARD JUALAN & STACKED BAR CHART -->
+                <!-- TAB 2: DASHBOARD JUALAN & GRAFIK ANALISIS -->
                 <div id="adminTabDashboardContent" class="hidden space-y-6">
                     <!-- SUMMARY CARDS -->
                     <div class="grid grid-cols-3 gap-3">
@@ -319,16 +319,29 @@
                         </div>
                     </div>
 
-                    <!-- VISUALIZATION STACKED BAR CHART BY MONTH & SET DEMAND -->
+                    <!-- 1. STACKED BAR CHART (JUALAN BULANAN) -->
                     <div class="bg-karcher-black p-5 rounded-xl border border-karcher-yellow/30 space-y-3">
                         <div class="flex justify-between items-center">
                             <h4 class="text-xs font-black uppercase tracking-wider text-karcher-yellow flex items-center gap-2">
-                                <i class="fa-solid fa-chart-column"></i> Analisis Jualan & Demand mengikut Set
+                                <i class="fa-solid fa-chart-column"></i> Jualan Bulanan mengikut Set
                             </h4>
-                            <span class="text-[10px] text-gray-400">Bulanan (Stacked Bar)</span>
+                            <span class="text-[10px] text-gray-400">Stacked Bar Chart</span>
                         </div>
-                        <div class="relative h-64 w-full">
+                        <div class="relative h-56 w-full">
                             <canvas id="monthlyDemandChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 2. PIE / DOUGHNUT CHART (TOTAL SALES PER SET) -->
+                    <div class="bg-karcher-black p-5 rounded-xl border border-karcher-yellow/30 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xs font-black uppercase tracking-wider text-karcher-yellow flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie"></i> Komposisi Total Sales mengikut Set
+                            </h4>
+                            <span class="text-[10px] text-gray-400">Pie / Donut Chart</span>
+                        </div>
+                        <div class="relative h-60 w-full flex justify-center items-center">
+                            <canvas id="setSalesPieChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -353,7 +366,8 @@
         let currentDisplayDate = new Date();
         let bookedRecords = [];
         let isAdminLoggedIn = false;
-        let demandChartInstance = null; // Pembolehubah untuk graf Chart.js
+        let demandChartInstance = null; // Bar Chart
+        let pieChartInstance = null;    // Pie/Donut Chart
 
         async function fetchBookedDatesFromSupabase() {
             if (!_supabase) {
@@ -368,7 +382,8 @@
                     renderModalCalendar();
                     renderAdminDateList();
                     updateDashboardSummary();
-                    renderMonthlyDemandChart(); // Render graf Chart.js
+                    renderMonthlyDemandChart();
+                    renderSetSalesPieChart(); // Render Pie Chart
                 }
             } catch (err) {
                 console.error("Gagal mengambil data dari Supabase:", err.message);
@@ -392,8 +407,9 @@
                 btnCal.className = "px-4 py-2 text-xs font-bold rounded-t-lg bg-karcher-gray text-gray-400 hover:text-white";
                 contentDash.classList.remove('hidden');
                 contentCal.classList.add('hidden');
-                // Kemas kini graf bila tab diklik
+                // Render ulang grafik saat berpindah tab
                 renderMonthlyDemandChart();
+                renderSetSalesPieChart();
             }
         }
 
@@ -421,7 +437,6 @@
             document.getElementById('totalBookedDays').innerText = `${totalDays} Hari`;
             document.getElementById('totalSalesAmount').innerText = `RM ${totalSales.toLocaleString()}`;
 
-            // TENTUKAN SET HIGHEST DEMAND
             let highestSet = "Tiada Data";
             if (totalDays > 0) {
                 if (countSetC >= countSetA && countSetC >= countSetB) {
@@ -444,313 +459,23 @@
             document.getElementById('roiRemaining').innerText = remaining > 0 ? `RM ${remaining.toLocaleString()}` : `RM 0 (Target Capai!)`;
         }
 
-        // FUNGSI UTAMA GRAF STACKED BAR CHART (CHART.JS)
+        // 1. STACKED BAR CHART
         function renderMonthlyDemandChart() {
             const ctx = document.getElementById('monthlyDemandChart');
             if (!ctx) return;
 
             const monthNames = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogos", "Sep", "Okt", "Nov", "Dis"];
-            
-            // Inisialisasi data 12 bulan (12 elemen berangka 0)
             const setAData = new Array(12).fill(0);
             const setBData = new Array(12).fill(0);
             const setCData = new Array(12).fill(0);
 
-            // Pengiraan mengikut bulan berdasarkan date_str
             bookedRecords.forEach(record => {
                 if (!record.date_str) return;
                 const dateParts = record.date_str.split('-');
                 if (dateParts.length === 3) {
-                    const monthIndex = parseInt(dateParts[1], 10) - 1; // 0 - 11
+                    const monthIndex = parseInt(dateParts[1], 10) - 1;
                     const setType = record.set_type || 'Set A';
 
                     if (monthIndex >= 0 && monthIndex < 12) {
                         if (setType === 'Set B') {
-                            setBData[monthIndex] += 65; // RM65 untuk Set B
-                        } else if (setType === 'Set C') {
-                            setCData[monthIndex] += 120; // RM120 untuk Set C
-                        } else {
-                            setAData[monthIndex] += 65; // RM65 untuk Set A
-                        }
-                    }
-                }
-            });
-
-            if (demandChartInstance) {
-                demandChartInstance.destroy(); // Padam graf lama sebelum bina yang baharu
-            }
-
-            demandChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: monthNames,
-                    datasets: [
-                        {
-                            label: 'Set A (Vacuum - RM65)',
-                            data: setAData,
-                            backgroundColor: '#3b82f6', // Biru
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Set B (Waterjet - RM65)',
-                            data: setBData,
-                            backgroundColor: '#f59e0b', // Oren
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Set C (Combo - RM120)',
-                            data: setCData,
-                            backgroundColor: '#10b981', // Hijau
-                            borderRadius: 4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: { color: '#d1d5db', font: { size: 10 } }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: RM ${context.raw}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            stacked: true,
-                            grid: { color: '#27272a' },
-                            ticks: { color: '#9ca3af', font: { size: 10 } }
-                        },
-                        y: {
-                            stacked: true,
-                            grid: { color: '#27272a' },
-                            ticks: { 
-                                color: '#9ca3af', 
-                                font: { size: 10 },
-                                callback: function(value) { return 'RM ' + value; }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function openCalendarModal() {
-            document.getElementById('calendarModal').classList.remove('hidden');
-            currentDisplayDate = new Date();
-            fetchBookedDatesFromSupabase();
-        }
-
-        function closeCalendarModal() {
-            document.getElementById('calendarModal').classList.add('hidden');
-        }
-
-        function renderModalCalendar() {
-            const grid = document.getElementById('modalCalendarGrid');
-            const monthHeader = document.getElementById('modalMonthYear');
-            const prevBtn = document.getElementById('prevMonthBtn');
-            grid.innerHTML = '';
-
-            const year = currentDisplayDate.getFullYear();
-            const month = currentDisplayDate.getMonth();
-
-            const monthNames = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
-            monthHeader.innerText = `${monthNames[month]} ${year}`;
-
-            const now = new Date();
-            const isCurrentOrPastMonth = (year < now.getFullYear()) || (year === now.getFullYear() && month <= now.getMonth());
-
-            if (!isAdminLoggedIn && isCurrentOrPastMonth) {
-                if (prevBtn) prevBtn.style.display = 'none';
-            } else {
-                if (prevBtn) prevBtn.style.display = 'inline-block';
-            }
-
-            const firstDayIndex = new Date(year, month, 1).getDay();
-            const totalDays = new Date(year, month + 1, 0).getDate();
-
-            for (let i = 0; i < firstDayIndex; i++) {
-                const emptyCell = document.createElement('div');
-                emptyCell.className = "h-12";
-                grid.appendChild(emptyCell);
-            }
-
-            for (let day = 1; day <= totalDays; day++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const cell = document.createElement('div');
-                
-                const matchedRecord = bookedRecords.find(item => item.date_str === dateStr);
-
-                const cellDate = new Date(year, month, day);
-                cellDate.setHours(0,0,0,0);
-                const todayMidnight = new Date();
-                todayMidnight.setHours(0,0,0,0);
-                const isPastDate = !isAdminLoggedIn && cellDate < todayMidnight;
-
-                if (isPastDate) {
-                    cell.className = "h-12 rounded-lg bg-karcher-gray/20 border border-gray-800 text-gray-600 font-bold flex flex-col items-center justify-center cursor-not-allowed text-xs opacity-40";
-                    cell.innerHTML = `<span>${day}</span>`;
-                } else if (matchedRecord) {
-                    let setBadgeClass = "bg-blue-600 border-blue-500 text-white";
-                    if (matchedRecord.set_type === 'Set B') {
-                        setBadgeClass = "bg-amber-600 border-amber-500 text-white";
-                    } else if (matchedRecord.set_type === 'Set C') {
-                        setBadgeClass = "bg-emerald-600 border-emerald-500 text-white";
-                    }
-
-                    cell.className = `h-12 rounded-lg bg-black border border-gray-700 font-bold flex flex-col items-center justify-center text-xs`;
-                    cell.innerHTML = `<span>${day}</span><span class="text-[9px] ${setBadgeClass} px-1.5 py-0.5 rounded-full font-black uppercase mt-0.5">${matchedRecord.set_type || 'Set A'}</span>`;
-                } else {
-                    cell.className = "h-12 rounded-lg bg-emerald-950/40 border border-emerald-600/60 text-emerald-300 font-bold flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-600 hover:text-white transition text-xs";
-                    cell.innerHTML = `<span>${day}</span>`;
-                    cell.onclick = () => selectCalendarDate(dateStr);
-                }
-
-                grid.appendChild(cell);
-            }
-        }
-
-        function changeMonth(step) {
-            const now = new Date();
-            const targetDate = new Date(currentDisplayDate);
-            targetDate.setMonth(targetDate.getMonth() + step);
-
-            if (!isAdminLoggedIn && step < 0) {
-                if (targetDate.getFullYear() < now.getFullYear() || (targetDate.getFullYear() === now.getFullYear() && targetDate.getMonth() < now.getMonth())) {
-                    return;
-                }
-            }
-
-            currentDisplayDate = targetDate;
-            renderModalCalendar();
-        }
-
-        function selectCalendarDate(dateStr) {
-            document.getElementById('startDate').value = dateStr;
-            const d = new Date(dateStr);
-            d.setDate(d.getDate() - 1);
-            document.getElementById('deliveryDate').value = d.toISOString().split('T')[0];
-            closeCalendarModal();
-            document.getElementById('tempahan').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function openAdminModal() {
-            document.getElementById('adminModal').classList.remove('hidden');
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
-        }
-
-        function verifyAdminPin() {
-            const pin = document.getElementById('adminPin').value;
-            if (pin === "1234") {
-                isAdminLoggedIn = true;
-                document.getElementById('adminLoginView').classList.add('hidden');
-                document.getElementById('adminControlView').classList.remove('hidden');
-                fetchBookedDatesFromSupabase();
-            } else {
-                alert("PIN Admin Salah!");
-            }
-        }
-
-        async function addBookedDateSupabase() {
-            const dateVal = document.getElementById('newBookedDate').value;
-            const setTypeVal = document.getElementById('adminSetSelect').value;
-            if (!dateVal) return alert("Sila pilih tarikh.");
-            if (!_supabase) return alert("Sila pastikan SUPABASE_ANON_KEY anda diisi dengan betul.");
-
-            const { error } = await _supabase.from('booked_dates').insert([{ date_str: dateVal, set_type: setTypeVal }]);
-            if (error) {
-                alert("Gagal menyimpan: " + error.message);
-            } else {
-                alert(`Tarikh ${dateVal} bagi [${setTypeVal}] berjaya ditandakan!`);
-                document.getElementById('newBookedDate').value = '';
-                fetchBookedDatesFromSupabase();
-            }
-        }
-
-        async function removeBookedDateSupabase(dateStr) {
-            if (!_supabase) return;
-            const { error } = await _supabase.from('booked_dates').delete().eq('date_str', dateStr);
-            if (error) {
-                alert("Gagal memadam: " + error.message);
-            } else {
-                fetchBookedDatesFromSupabase();
-            }
-        }
-
-        function renderAdminDateList() {
-            const listContainer = document.getElementById('adminDateList');
-            listContainer.innerHTML = '';
-
-            if (bookedRecords.length === 0) {
-                listContainer.innerHTML = '<p class="text-xs text-gray-500 italic">Tiada tarikh ditempah.</p>';
-                return;
-            }
-
-            bookedRecords.forEach(record => {
-                const item = document.createElement('div');
-                item.className = "flex justify-between items-center bg-karcher-black p-2.5 rounded-lg border border-karcher-gray text-xs";
-                item.innerHTML = `
-                    <span class="text-white font-mono flex items-center gap-2">
-                        <i class="fa-solid fa-calendar-xmark text-red-500"></i>
-                        ${record.date_str} 
-                        <span class="bg-gray-800 text-karcher-yellow px-2 py-0.5 rounded font-bold uppercase">${record.set_type || 'Set A'}</span>
-                    </span>
-                    <button onclick="removeBookedDateSupabase('${record.date_str}')" class="text-red-400 hover:text-white text-xs px-2 py-1 rounded bg-red-950/50 hover:bg-red-600 transition">
-                        <i class="fa-solid fa-trash"></i> Padam
-                    </button>
-                `;
-                listContainer.appendChild(item);
-            });
-        }
-
-        function calculateTotal() {
-            const packageVal = document.getElementById('packageSelect').value;
-            const rate = parseFloat(packageVal.split('|')[0]) || 65;
-            const days = parseInt(document.getElementById('rentalDays').value) || 1;
-            
-            const rentalTotal = days * rate;
-            const deposit = 50;
-
-            document.getElementById('rentalFeeText').innerText = `RM ${rentalTotal.toFixed(2)}`;
-            document.getElementById('totalAmountText').innerText = `RM ${(rentalTotal + deposit).toFixed(2)}`;
-        }
-
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            const selectedPkg = document.getElementById('packageSelect').value.split('|')[1];
-            const name = document.getElementById('custName').value;
-            const phone = document.getElementById('custPhone').value;
-            const days = document.getElementById('rentalDays').value;
-            const address = document.getElementById('custAddress').value;
-            const startDate = document.getElementById('startDate').value;
-            const deliveryDate = document.getElementById('deliveryDate').value;
-            const total = document.getElementById('totalAmountText').innerText;
-
-            const text = `*TEMPAHAN SEWAAN MADKARCHER*%0A%0A` +
-                         `*Pakej:* ${selectedPkg}%0A` +
-                         `*Nama:* ${name}%0A` +
-                         `*No. Hp:* ${phone}%0A` +
-                         `*Alamat:* ${address}%0A%0A` +
-                         `*Tempoh Sewa:* ${days} Hari%0A` +
-                         `*Tarikh Hantar:* ${deliveryDate}%0A` +
-                         `*Tarikh Mula:* ${startDate}%0A%0A` +
-                         `*Jumlah Anggaran:* ${total}`;
-
-            window.open(`https://wa.me/60126220913?text=${text}`, '_blank');
-        }
-
-        window.onload = function() {
-            fetchBookedDatesFromSupabase();
-            calculateTotal();
-        };
-    </script>
-</body>
-</html>
+                            setBData[monthIndex] += 6
