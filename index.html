@@ -95,7 +95,7 @@
                         <span class="text-xl font-black tracking-wider text-white leading-none">MADKARCHER</span>
                         <span class="hidden sm:inline-block bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">Verified Pro</span>
                     </div>
-                    <span class="text-[11px] text-karcher-yellow font-mono tracking-widest block mt-1">KILOFOXTROT RENTAL HUB</span>
+                    <span class="text-[11px] text-karcher-yellow font-mono tracking-widest block mt-1">RENTAL HUB</span>
                 </div>
             </a>
 
@@ -141,7 +141,7 @@
                 <div class="lg:col-span-7 space-y-6">
                     <div class="inline-flex items-center gap-2.5 bg-karcher-card border border-karcher-yellow/30 text-karcher-yellow px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase">
                         <span class="w-2 h-2 rounded-full bg-karcher-yellow animate-pulse"></span>
-                        Kuala Pilah & Negeri Sembilan
+                        Perkhidmatan Sewaan Mesin Professional
                     </div>
 
                     <h1 class="text-4xl sm:text-6xl font-black text-white leading-[1.1] tracking-tight">
@@ -421,7 +421,7 @@
 
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-2">Alamat Penuh Penghantaran</label>
-                            <textarea id="custAddress" rows="2" required class="w-full bg-karcher-card border border-karcher-border focus:border-karcher-yellow text-white rounded-xl px-4 py-3 outline-none transition text-sm">D-0-12, Blok D, Taman Waja, 72000 Kuala Pilah, N.Sembilan</textarea>
+                            <textarea id="custAddress" rows="2" required class="w-full bg-karcher-card border border-karcher-border focus:border-karcher-yellow text-white rounded-xl px-4 py-3 outline-none transition text-sm" placeholder="Masukkan alamat lengkap anda"></textarea>
                         </div>
 
                         <button id="submitBtn" type="submit" class="w-full bg-karcher-yellow hover:bg-karcher-yellowHover text-karcher-black font-black py-4 rounded-xl text-base transition flex items-center justify-center gap-2 shadow-glow">
@@ -482,9 +482,9 @@
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-2">
                 <span class="bg-karcher-yellow text-karcher-black font-black px-2 py-0.5 rounded">KÄRCHER</span>
-                <span class="text-gray-300 font-bold">MADKARCHER • KILOFOXTROT RENTAL</span>
+                <span class="text-gray-300 font-bold">MADKARCHER RENTAL HUB</span>
             </div>
-            <p>&copy; 2026 Madkarcher Rental Service. Kuala Pilah, Negeri Sembilan.</p>
+            <p>&copy; 2026 Madkarcher Rental Service. Hak Cipta Terpelihara.</p>
         </div>
     </footer>
 
@@ -723,9 +723,9 @@
         let pieChartInstance = null;
 
         const defaultRecords = [
-            { date_str: "2026-10-18", set_type: "Set A", status: "Approved", cust_name: "En. Razak", cust_phone: "0123456789", cust_address: "Taman Bahagia, Kuala Pilah", addons: "Tiada", total_amount: 115, booking_ref: "MK-1001" },
-            { date_str: "2026-10-19", set_type: "Set C", status: "Approved", cust_name: "Pn. Suraya", cust_phone: "0198765432", cust_address: "Senaling, Kuala Pilah", addons: "Sabun Tablet x2", total_amount: 179, booking_ref: "MK-1002" },
-            { date_str: "2026-10-21", set_type: "Set B", status: "Pending Approval", cust_name: "Aishah Humaira", cust_phone: "0136442925", cust_address: "D-0-12, Blok D, Taman Waja, 72000 Kuala Pilah", addons: "Set Berus Heavy-Duty", total_amount: 125, booking_ref: "MK-1003" }
+            { date_str: "2026-10-18", set_type: "Set A", status: "Approved", cust_name: "En. Razak", cust_phone: "0123456789", cust_address: "Taman Bahagia", addons: "Tiada", total_amount: 115, booking_ref: "MK-1001" },
+            { date_str: "2026-10-19", set_type: "Set C", status: "Approved", cust_name: "Pn. Suraya", cust_phone: "0198765432", cust_address: "Kawasan Utama", addons: "Sabun Tablet x2", total_amount: 179, booking_ref: "MK-1002" },
+            { date_str: "2026-10-21", set_type: "Set B", status: "Pending Approval", cust_name: "Aishah Humaira", cust_phone: "0136442925", cust_address: "No. 12, Jalan Damai", addons: "Set Berus Heavy-Duty", total_amount: 125, booking_ref: "MK-1003" }
         ];
 
         let bookedRecords = JSON.parse(localStorage.getItem('madkarcher_bookings_v4')) || defaultRecords;
@@ -798,9 +798,8 @@
 
             const receiptContent = 
 `==================================================
-           MADKARCHER RENTAL HUB (KILOFOXTROT)
+           MADKARCHER RENTAL HUB
         Perkhidmatan Sewa Vacuum & Waterjet Professional
-            Kuala Pilah, Negeri Sembilan
 ==================================================
 
 INVOIS / RESIT RASMI SEWAAN
@@ -810,7 +809,7 @@ Tarikh Invois  : ${formatDateISO(new Date())}
 Status Resit   : ${targetRec.status || 'Approved'}
 
 MAKLUMAT PELANGGAN:
-Nama Pelanggan : ${targetRec.cust_name || 'Pelanggan Walk-In'}
+Nama Pelanggan : ${targetRec.cust_name || 'Pelanggan'}
 No. Telefon    : ${targetRec.cust_phone || '-'}
 Alamat Hantar  : ${targetRec.cust_address || '-'}
 
@@ -833,7 +832,6 @@ TERMA & SYARAT UTAMA:
 2. Sila pastikan mesin dibersihkan selepas digunakan.
 
 Terima kasih kerana memilih MADKARCHER!
-Sebarang pertanyaan hubungi: 012-622 0913
 ==================================================`;
 
             const blob = new Blob([receiptContent], { type: 'text/plain;charset=utf-8;' });
@@ -886,7 +884,7 @@ Sebarang pertanyaan hubungi: 012-622 0913
                 `*Add-On:* ${targetRec.addons || 'Tiada'}%0A` +
                 `*Jumlah Keseluruhan:* ${totalRM}%0A` +
                 `----------------------------------------%0A` +
-                `_Pasukan Kilofoxtrot Rental akan menghubungi anda sebelum penghantaran dilakukan. Terima kasih kerana memilih MADKARCHER!_`;
+                `_Pihak kami akan menghubungi anda sebelum penghantaran dilakukan. Terima kasih kerana memilih MADKARCHER!_`;
 
             window.open(`https://wa.me/${formattedPhone}?text=${waMessage}`, '_blank');
         }
@@ -1161,7 +1159,7 @@ Sebarang pertanyaan hubungi: 012-622 0913
                          `*Alamat:* ${address}%0A` +
                          `----------------------------------------%0A` +
                          `*Jumlah Anggaran:* ${totalText}%0A%0A` +
-                         `_Tarikh saya telah dikunci sementara. Berikut ialah pengesahan tempahan:_`;
+                         `_Tarikh anda telah dikunci sementara. Sila lengkapkan urusan selanjutnya._`;
 
             if (submitBtnText) submitBtnText.innerText = originalText;
             if (submitBtn) submitBtn.disabled = false;
