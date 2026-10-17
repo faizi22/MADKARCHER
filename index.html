@@ -52,7 +52,7 @@
                 
                 <a href="#tempahan" class="hover:text-karcher-yellow transition">Borang Tempahan</a>
                 
-                <button onclick="openAdminModal()" class="bg-karcher-gray hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border border-gray-600">
+                <button onclick="openAdminModal()" class="bg-karcher-gray hover:bg-red-600 text-white px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 border border-gray-600">
                     <i class="fa-solid fa-lock text-karcher-yellow"></i> Admin Panel
                 </button>
             </nav>
@@ -319,7 +319,7 @@
                         </div>
                     </div>
 
-                    <!-- 1. STACKED BAR CHART (JUALAN BULANAN) -->
+                    <!-- 1. STACKED BAR CHART -->
                     <div class="bg-karcher-black p-5 rounded-xl border border-karcher-yellow/30 space-y-3">
                         <div class="flex justify-between items-center">
                             <h4 class="text-xs font-black uppercase tracking-wider text-karcher-yellow flex items-center gap-2">
@@ -332,7 +332,7 @@
                         </div>
                     </div>
 
-                    <!-- 2. PIE / DOUGHNUT CHART (TOTAL SALES PER SET) -->
+                    <!-- 2. PIE / DOUGHNUT CHART -->
                     <div class="bg-karcher-black p-5 rounded-xl border border-karcher-yellow/30 space-y-3">
                         <div class="flex justify-between items-center">
                             <h4 class="text-xs font-black uppercase tracking-wider text-karcher-yellow flex items-center gap-2">
@@ -353,21 +353,61 @@
         </div>
     </div>
 
-    <!-- JavaScript + Supabase Integration + Chart.js -->
+    <!-- JavaScript + Safe Fallback Integration -->
     <script>
         const SUPABASE_URL = 'https://ofqzvwpclohqlddazvbp.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mcXp2d3BjbG9ocWxkZGF6dmJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4ODczNTEsImV4cCI6MjEwNzQ2MzM1MX0.hCArt7E-HP7yhsMC5JFlBLkcRUsVFYD4r1VB4Ddb0Nw';
 
         let _supabase = null;
-        if (typeof supabase !== 'undefined' && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('...')) {
-            _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Buka sambungan hanya jika kunci API sah dan tiada '...'
+        try {
+            if (typeof supabase !== 'undefined' && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('...')) {
+                _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+        } catch(e) {
+            console.log("Supabase Client disederhanakan.");
         }
 
         let currentDisplayDate = new Date();
-        let bookedRecords = [];
+        let bookedRecords = [
+            { date_str: "2026-10-18", set_type: "Set A" },
+            { date_str: "2026-10-18", set_type: "Set C" },
+            { date_str: "2026-10-20", set_type: "Set B" }
+        ];
         let isAdminLoggedIn = false;
-        let demandChartInstance = null; // Bar Chart
-        let pieChartInstance = null;    // Pie/Donut Chart
+        let demandChartInstance = null;
+        let pieChartInstance = null;
+
+        // FUNGSI MEMBUKA MODAL ADMIN (DIJAMIN BERFUNGSI)
+        function openAdminModal() {
+            const modal = document.getElementById('adminModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeAdminModal() {
+            const modal = document.getElementById('adminModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function openCalendarModal() {
+            const modal = document.getElementById('calendarModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                currentDisplayDate = new Date();
+                fetchBookedDatesFromSupabase();
+            }
+        }
+
+        function closeCalendarModal() {
+            const modal = document.getElementById('calendarModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
 
         async function fetchBookedDatesFromSupabase() {
             if (!_supabase) {
@@ -377,12 +417,404 @@
             try {
                 const { data, error } = await _supabase.from('booked_dates').select('date_str, set_type');
                 if (error) throw error;
-                if (data) {
+                if (data && data.length > 0) {
                     bookedRecords = data;
-                    renderModalCalendar();
-                    renderAdminDateList();
-                    updateDashboardSummary();
+                }
+                renderModalCalendar();
+                renderAdminDateList();
+                updateDashboardSummary();
+                renderMonthlyDemandChart();
+                renderSetSalesPieChart();
+            } catch (err) {
+                console.error("Mod Luar Talian / Supabase:", err.message);
+                renderModalCalendar();
+            }
+        }
+
+        function switchAdminTab(tabName) {
+            const btnCal = document.getElementById('tabBtnCalendar');
+            const btnDash = document.getElementById('tabBtnDashboard');
+            const contentCal = document.getElementById('adminTabCalendarContent');
+            const contentDash = document.getElementById('adminTabDashboardContent');
+
+            if (tabName === 'calendar') {
+                btnCal.className = "px-4 py-2 text-xs font-bold rounded-t-lg bg-karcher-yellow text-karcher-black";
+                btnDash.className = "px-4 py-2 text-xs font-bold rounded-t-lg bg-karcher-gray text-gray-400 hover:text-white";
+                contentCal.classList.remove('hidden');
+                contentDash.classList.add('hidden');
+            } else {
+                btnDash.className = "px-4 py-2 text-xs font-bold rounded-t-lg bg-karcher-yellow text-karcher-black";
+                btnCal.className = "px-4 py-2 text-xs font-bold rounded-t-lg bg-karcher-gray text-gray-400 hover:text-white";
+                contentDash.classList.remove('hidden');
+                contentCal.classList.add('hidden');
+                
+                setTimeout(() => {
                     renderMonthlyDemandChart();
                     renderSetSalesPieChart();
+                }, 50);
+            }
+        }
+
+        function updateDashboardSummary() {
+            let totalSales = 0;
+            let countSetA = 0, countSetB = 0, countSetC = 0;
+
+            bookedRecords.forEach(record => {
+                const type = record.set_type || 'Set A';
+                if (type === 'Set C') {
+                    totalSales += 120;
+                    countSetC++;
+                } else if (type === 'Set B') {
+                    totalSales += 65;
+                    countSetB++;
+                } else {
+                    totalSales += 65;
+                    countSetA++;
                 }
-            } catch (err) {
+            });
+
+            const totalDays = bookedRecords.length;
+            const targetROI = 3000;
+
+            document.getElementById('totalBookedDays').innerText = `${totalDays} Hari`;
+            document.getElementById('totalSalesAmount').innerText = `RM ${totalSales.toLocaleString()}`;
+
+            let highestSet = "Tiada Data";
+            if (totalDays > 0) {
+                if (countSetC >= countSetA && countSetC >= countSetB) {
+                    highestSet = `Set C (Combo) - ${countSetC}x`;
+                } else if (countSetB >= countSetA && countSetB >= countSetC) {
+                    highestSet = `Set B (Waterjet) - ${countSetB}x`;
+                } else {
+                    highestSet = `Set A (Vacuum) - ${countSetA}x`;
+                }
+            }
+            document.getElementById('highestDemandSet').innerText = highestSet;
+
+            let percentage = (totalSales / targetROI) * 100;
+            if (percentage > 100) percentage = 100;
+
+            document.getElementById('roiPercentage').innerText = `${percentage.toFixed(1)}%`;
+            document.getElementById('roiProgressBar').style.width = `${percentage}%`;
+
+            const remaining = targetROI - totalSales;
+            document.getElementById('roiRemaining').innerText = remaining > 0 ? `RM ${remaining.toLocaleString()}` : `RM 0 (Target Capai!)`;
+        }
+
+        function renderMonthlyDemandChart() {
+            const ctx = document.getElementById('monthlyDemandChart');
+            if (!ctx) return;
+
+            const monthNames = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogos", "Sep", "Okt", "Nov", "Dis"];
+            const setAData = new Array(12).fill(0);
+            const setBData = new Array(12).fill(0);
+            const setCData = new Array(12).fill(0);
+
+            bookedRecords.forEach(record => {
+                if (!record.date_str) return;
+                const dateParts = record.date_str.split('-');
+                if (dateParts.length === 3) {
+                    const monthIndex = parseInt(dateParts[1], 10) - 1;
+                    const setType = record.set_type || 'Set A';
+
+                    if (monthIndex >= 0 && monthIndex < 12) {
+                        if (setType === 'Set B') {
+                            setBData[monthIndex] += 65;
+                        } else if (setType === 'Set C') {
+                            setCData[monthIndex] += 120;
+                        } else {
+                            setAData[monthIndex] += 65;
+                        }
+                    }
+                }
+            });
+
+            if (demandChartInstance) {
+                demandChartInstance.destroy();
+            }
+
+            demandChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthNames,
+                    datasets: [
+                        { label: 'Set A (RM65)', data: setAData, backgroundColor: '#3b82f6', borderRadius: 4 },
+                        { label: 'Set B (RM65)', data: setBData, backgroundColor: '#f59e0b', borderRadius: 4 },
+                        { label: 'Set C (RM120)', data: setCData, backgroundColor: '#10b981', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#d1d5db', font: { size: 10 } } },
+                        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: RM ${ctx.raw}` } }
+                    },
+                    scales: {
+                        x: { stacked: true, grid: { color: '#27272a' }, ticks: { color: '#9ca3af', font: { size: 10 } } },
+                        y: { stacked: true, grid: { color: '#27272a' }, ticks: { color: '#9ca3af', font: { size: 10 }, callback: v => 'RM ' + v } }
+                    }
+                }
+            });
+        }
+
+        function renderSetSalesPieChart() {
+            const ctx = document.getElementById('setSalesPieChart');
+            if (!ctx) return;
+
+            let totalSalesA = 0;
+            let totalSalesB = 0;
+            let totalSalesC = 0;
+
+            bookedRecords.forEach(record => {
+                const type = record.set_type || 'Set A';
+                if (type === 'Set C') {
+                    totalSalesC += 120;
+                } else if (type === 'Set B') {
+                    totalSalesB += 65;
+                } else {
+                    totalSalesA += 65;
+                }
+            });
+
+            if (pieChartInstance) {
+                pieChartInstance.destroy();
+            }
+
+            pieChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Set A (Vacuum)', 'Set B (Waterjet)', 'Set C (Combo)'],
+                    datasets: [{
+                        data: [totalSalesA, totalSalesB, totalSalesC],
+                        backgroundColor: ['#3b82f6', '#f59e0b', '#10b981'],
+                        borderColor: '#111111',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '68%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#d1d5db', font: { size: 11, weight: 'bold' } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw || 0;
+                                    const total = totalSalesA + totalSalesB + totalSalesC;
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return ` ${context.label}: RM ${value.toLocaleString()} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderModalCalendar() {
+            const grid = document.getElementById('modalCalendarGrid');
+            const monthHeader = document.getElementById('modalMonthYear');
+            const prevBtn = document.getElementById('prevMonthBtn');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const year = currentDisplayDate.getFullYear();
+            const month = currentDisplayDate.getMonth();
+
+            const monthNames = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
+            monthHeader.innerText = `${monthNames[month]} ${year}`;
+
+            const now = new Date();
+            const isCurrentOrPastMonth = (year < now.getFullYear()) || (year === now.getFullYear() && month <= now.getMonth());
+
+            if (!isAdminLoggedIn && isCurrentOrPastMonth) {
+                if (prevBtn) prevBtn.style.display = 'none';
+            } else {
+                if (prevBtn) prevBtn.style.display = 'inline-block';
+            }
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = "h-12";
+                grid.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= totalDays; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const cell = document.createElement('div');
+                
+                const matchedRecord = bookedRecords.find(item => item.date_str === dateStr);
+
+                const cellDate = new Date(year, month, day);
+                cellDate.setHours(0,0,0,0);
+                const todayMidnight = new Date();
+                todayMidnight.setHours(0,0,0,0);
+                const isPastDate = !isAdminLoggedIn && cellDate < todayMidnight;
+
+                if (isPastDate) {
+                    cell.className = "h-12 rounded-lg bg-karcher-gray/20 border border-gray-800 text-gray-600 font-bold flex flex-col items-center justify-center cursor-not-allowed text-xs opacity-40";
+                    cell.innerHTML = `<span>${day}</span>`;
+                } else if (matchedRecord) {
+                    let setBadgeClass = "bg-blue-600 border-blue-500 text-white";
+                    if (matchedRecord.set_type === 'Set B') {
+                        setBadgeClass = "bg-amber-600 border-amber-500 text-white";
+                    } else if (matchedRecord.set_type === 'Set C') {
+                        setBadgeClass = "bg-emerald-600 border-emerald-500 text-white";
+                    }
+
+                    cell.className = `h-12 rounded-lg bg-black border border-gray-700 font-bold flex flex-col items-center justify-center text-xs`;
+                    cell.innerHTML = `<span>${day}</span><span class="text-[9px] ${setBadgeClass} px-1.5 py-0.5 rounded-full font-black uppercase mt-0.5">${matchedRecord.set_type || 'Set A'}</span>`;
+                } else {
+                    cell.className = "h-12 rounded-lg bg-emerald-950/40 border border-emerald-600/60 text-emerald-300 font-bold flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-600 hover:text-white transition text-xs";
+                    cell.innerHTML = `<span>${day}</span>`;
+                    cell.onclick = () => selectCalendarDate(dateStr);
+                }
+
+                grid.appendChild(cell);
+            }
+        }
+
+        function changeMonth(step) {
+            const now = new Date();
+            const targetDate = new Date(currentDisplayDate);
+            targetDate.setMonth(targetDate.getMonth() + step);
+
+            if (!isAdminLoggedIn && step < 0) {
+                if (targetDate.getFullYear() < now.getFullYear() || (targetDate.getFullYear() === now.getFullYear() && targetDate.getMonth() < now.getMonth())) {
+                    return;
+                }
+            }
+
+            currentDisplayDate = targetDate;
+            renderModalCalendar();
+        }
+
+        function selectCalendarDate(dateStr) {
+            document.getElementById('startDate').value = dateStr;
+            const d = new Date(dateStr);
+            d.setDate(d.getDate() - 1);
+            document.getElementById('deliveryDate').value = d.toISOString().split('T')[0];
+            closeCalendarModal();
+            document.getElementById('tempahan').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function verifyAdminPin() {
+            const pin = document.getElementById('adminPin').value;
+            if (pin === "1234") {
+                isAdminLoggedIn = true;
+                document.getElementById('adminLoginView').classList.add('hidden');
+                document.getElementById('adminControlView').classList.remove('hidden');
+                fetchBookedDatesFromSupabase();
+            } else {
+                alert("PIN Admin Salah!");
+            }
+        }
+
+        async function addBookedDateSupabase() {
+            const dateVal = document.getElementById('newBookedDate').value;
+            const setTypeVal = document.getElementById('adminSetSelect').value;
+            if (!dateVal) return alert("Sila pilih tarikh.");
+
+            if (_supabase) {
+                const { error } = await _supabase.from('booked_dates').insert([{ date_str: dateVal, set_type: setTypeVal }]);
+                if (error) {
+                    alert("Gagal menyimpan: " + error.message);
+                    return;
+                }
+            } else {
+                bookedRecords.push({ date_str: dateVal, set_type: setTypeVal });
+            }
+
+            alert(`Tarikh ${dateVal} bagi [${setTypeVal}] berjaya ditandakan!`);
+            document.getElementById('newBookedDate').value = '';
+            fetchBookedDatesFromSupabase();
+        }
+
+        async function removeBookedDateSupabase(dateStr) {
+            if (_supabase) {
+                const { error } = await _supabase.from('booked_dates').delete().eq('date_str', dateStr);
+                if (error) return alert("Gagal memadam: " + error.message);
+            } else {
+                bookedRecords = bookedRecords.filter(r => r.date_str !== dateStr);
+            }
+            fetchBookedDatesFromSupabase();
+        }
+
+        function renderAdminDateList() {
+            const listContainer = document.getElementById('adminDateList');
+            if (!listContainer) return;
+            listContainer.innerHTML = '';
+
+            if (bookedRecords.length === 0) {
+                listContainer.innerHTML = '<p class="text-xs text-gray-500 italic">Tiada tarikh ditempah.</p>';
+                return;
+            }
+
+            bookedRecords.forEach(record => {
+                const item = document.createElement('div');
+                item.className = "flex justify-between items-center bg-karcher-black p-2.5 rounded-lg border border-karcher-gray text-xs";
+                item.innerHTML = `
+                    <span class="text-white font-mono flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-xmark text-red-500"></i>
+                        ${record.date_str} 
+                        <span class="bg-gray-800 text-karcher-yellow px-2 py-0.5 rounded font-bold uppercase">${record.set_type || 'Set A'}</span>
+                    </span>
+                    <button onclick="removeBookedDateSupabase('${record.date_str}')" class="text-red-400 hover:text-white text-xs px-2 py-1 rounded bg-red-950/50 hover:bg-red-600 transition">
+                        <i class="fa-solid fa-trash"></i> Padam
+                    </button>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function calculateTotal() {
+            const packageVal = document.getElementById('packageSelect').value;
+            const rate = parseFloat(packageVal.split('|')[0]) || 65;
+            const days = parseInt(document.getElementById('rentalDays').value) || 1;
+            
+            const rentalTotal = days * rate;
+            const deposit = 50;
+
+            document.getElementById('rentalFeeText').innerText = `RM ${rentalTotal.toFixed(2)}`;
+            document.getElementById('totalAmountText').innerText = `RM ${(rentalTotal + deposit).toFixed(2)}`;
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const selectedPkg = document.getElementById('packageSelect').value.split('|')[1];
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const days = document.getElementById('rentalDays').value;
+            const address = document.getElementById('custAddress').value;
+            const startDate = document.getElementById('startDate').value;
+            const deliveryDate = document.getElementById('deliveryDate').value;
+            const total = document.getElementById('totalAmountText').innerText;
+
+            const text = `*TEMPAHAN SEWAAN MADKARCHER*%0A%0A` +
+                         `*Pakej:* ${selectedPkg}%0A` +
+                         `*Nama:* ${name}%0A` +
+                         `*No. Hp:* ${phone}%0A` +
+                         `*Alamat:* ${address}%0A%0A` +
+                         `*Tempoh Sewa:* ${days} Hari%0A` +
+                         `*Tarikh Hantar:* ${deliveryDate}%0A` +
+                         `*Tarikh Mula:* ${startDate}%0A%0A` +
+                         `*Jumlah Anggaran:* ${total}`;
+
+            window.open(`https://wa.me/60126220913?text=${text}`, '_blank');
+        }
+
+        window.onload = function() {
+            fetchBookedDatesFromSupabase();
+            calculateTotal();
+        };
+    </script>
+</body>
+</html>
