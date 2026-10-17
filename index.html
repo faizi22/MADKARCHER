@@ -749,7 +749,7 @@
             };
 
             toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-2xl border-l-4 shadow-2xl text-xs font-bold transition-all duration-300 ${colors[type] || colors.info}`;
-            toast.innerHTML = `<i class="fa-solid ${icons[type] \vert{}\vert{} icons.info} text-base"></i><span>${message}</span>`;
+            toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.info} text-base"></i><span>${message}</span>`;
             
             container.appendChild(toast);
             setTimeout(() => {
@@ -819,7 +819,8 @@ Tarikh Hantar  : ${deliveryDateStr} (H-1)
 Add-On         : ${targetRec.addons || 'Tiada'}
 
 PERINCIAN BAYARAN:
-- Caj Sewaan Pakej (${rentalDays} Hari) : RM ${subtotal.toFixed(2)} - Security Deposit (Refundable)   : RM${deposit.toFixed(2)}
+- Caj Sewaan Pakej (${rentalDays} Hari) : RM ${subtotal.toFixed(2)}
+- Security Deposit (Refundable)   : RM ${deposit.toFixed(2)}
 --------------------------------------------------
 JUMLAH KESELURUHAN DIKATAKAN       : RM ${Number(grandTotal).toFixed(2)}
 ==================================================
@@ -1049,7 +1050,7 @@ Sebarang pertanyaan hubungi: 012-622 0913
                 return false;
             } else {
                 alertBox.className = "rounded-xl p-3.5 text-xs font-bold flex items-center gap-3 border bg-emerald-950/60 border-emerald-500/50 text-emerald-300";
-                alertBox.innerHTML = `<i class="fa-solid fa-circle-check text-base text-emerald-400"></i> <span>Slot ${selectedSetCode} (${days} hari bermula${startStr}) masih kosong!</span>`;
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-check text-base text-emerald-400"></i> <span>Slot ${selectedSetCode} (${days} hari bermula ${startStr}) masih kosong!</span>`;
                 submitBtn.disabled = false;
                 submitBtn.className = "w-full bg-karcher-yellow hover:bg-karcher-yellowHover text-karcher-black font-black py-4 rounded-xl text-base transition flex items-center justify-center gap-2 shadow-glow";
                 return true;
@@ -1127,4 +1128,583 @@ Sebarang pertanyaan hubungi: 012-622 0913
             saveLocalBackup();
             await fetchBookedDatesFromSupabase();
 
-            showToast(`Slot ${setCode} (${bookingRef}) dikunci sebagai 'Pending Approval'!
+            showToast(`Slot ${setCode} (${bookingRef}) dikunci sebagai 'Pending Approval'! Membuka WhatsApp...`, "success");
+
+            const text = `*TEMPAHAN SEWAAN MADKARCHER*%0A` +
+                         `*Rujukan:* ${bookingRef} _(Status: Pending Approval)_%0A` +
+                         `----------------------------------------%0A` +
+                         `*Pakej:* ${selectedPkg}%0A` +
+                         `*Add-On:* ${addonText}%0A` +
+                         `*Tempoh Sewa:* ${days} Hari%0A` +
+                         `*Tarikh Hantar (H-1):* ${deliveryDate}%0A` +
+                         `*Tarikh Mula Sewa:* ${startDate}%0A%0A` +
+                         `*BUTIRAN PELANGGAN*%0A` +
+                         `*Nama:* ${name}%0A` +
+                         `*No. WhatsApp:* ${phone}%0A` +
+                         `*Alamat:* ${address}%0A` +
+                         `----------------------------------------%0A` +
+                         `*Jumlah Anggaran:* ${totalText}%0A%0A` +
+                         `_Tarikh saya telah dikunci sementara. Berikut ialah pengesahan tempahan:_`;
+
+            submitBtnText.innerText = originalText;
+            window.open(`https://wa.me/60126220913?text=${text}`, '_blank');
+        }
+
+        function openCalendarModal() {
+            document.getElementById('calendarModal').classList.remove('hidden');
+            fetchBookedDatesFromSupabase();
+        }
+
+        function closeCalendarModal() {
+            document.getElementById('calendarModal').classList.add('hidden');
+        }
+
+        function setCalendarFilter(filterVal) {
+            calendarFilter = filterVal;
+            ['ALL', 'SetA', 'SetB', 'SetC'].forEach(k => {
+                const btn = document.getElementById('calFilter-' + k);
+                if (btn) btn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-karcher-card text-gray-300 hover:text-white transition";
+            });
+            const activeId = filterVal === 'ALL' ? 'calFilter-ALL' : 'calFilter-' + filterVal.replace(' ', '');
+            const activeBtn = document.getElementById(activeId);
+            if (activeBtn) activeBtn.className = "px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-karcher-yellow text-karcher-black transition";
+            renderModalCalendar();
+        }
+
+        function renderModalCalendar() {
+            const grid = document.getElementById('modalCalendarGrid');
+            const monthHeader = document.getElementById('modalMonthYear');
+            const prevBtn = document.getElementById('prevMonthBtn');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const year = currentDisplayDate.getFullYear();
+            const month = currentDisplayDate.getMonth();
+            const monthNames = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
+            monthHeader.innerText = `${monthNames[month]} ${year}`;
+
+            const now = new Date();
+            const isCurrentOrPastMonth = (year < now.getFullYear()) || (year === now.getFullYear() && month <= now.getMonth());
+            if (prevBtn) prevBtn.style.visibility = (!isAdminLoggedIn && isCurrentOrPastMonth) ? 'hidden' : 'visible';
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = "h-14";
+                grid.appendChild(emptyCell);
+            }
+
+            const todayMidnight = new Date();
+            todayMidnight.setHours(0, 0, 0, 0);
+
+            for (let day = 1; day <= totalDays; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const cell = document.createElement('div');
+                const cellDate = new Date(year, month, day);
+                cellDate.setHours(0, 0, 0, 0);
+                const isPastDate = !isAdminLoggedIn && cellDate < todayMidnight;
+
+                const status = getDayInventoryStatus(dateStr);
+
+                if (isPastDate) {
+                    cell.className = "h-14 rounded-xl bg-karcher-black/40 border border-karcher-border/40 text-gray-600 font-bold flex flex-col items-center justify-center cursor-not-allowed text-xs opacity-40";
+                    cell.innerHTML = `<span>${day}</span>`;
+                } else {
+                    let isSelectable = !status.isFullyBooked;
+                    if (calendarFilter === 'Set A') isSelectable = status.availA;
+                    if (calendarFilter === 'Set B') isSelectable = status.availB;
+                    if (calendarFilter === 'Set C') isSelectable = status.availC;
+
+                    const badgesHtml = status.recordsOnDate.map(rec => {
+                        const st = rec.set_type || 'Set A';
+                        const isPend = rec.status === 'Pending Approval';
+                        if (isPend) {
+                            return `<span class="text-[8px] bg-amber-950 border border-amber-400 border-dashed text-amber-300 px-1 py-0.2 rounded font-black uppercase leading-tight">${st} (P)</span>`;
+                        }
+                        let cls = "bg-blue-600 text-white";
+                        if (st === 'Set B') cls = "bg-amber-500 text-black";
+                        if (st === 'Set C') cls = "bg-rose-600 text-white";
+                        return `<span class="text-[8px] ${cls} px-1.5 py-0.2 rounded font-black uppercase leading-tight">${st}</span>`;
+                    }).join('');
+
+                    if (!isSelectable) {
+                        cell.className = `h-14 rounded-xl bg-karcher-black border ${status.hasPending ? 'border-amber-500/60 border-dashed' : 'border-rose-900/60'} text-gray-400 font-bold flex flex-col items-center justify-center text-xs gap-0.5 cursor-not-allowed`;
+                        cell.innerHTML = `<span>${day}</span><div class="flex flex-wrap justify-center gap-0.5">${badgesHtml}</div>`;
+                    } else {
+                        cell.className = "h-14 rounded-xl bg-emerald-950/30 border border-emerald-500/40 text-emerald-300 font-bold flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-500 hover:text-karcher-black transition text-xs gap-0.5";
+                        cell.innerHTML = `<span>${day}</span><div class="flex flex-wrap justify-center gap-0.5">${badgesHtml}</div>`;
+                        cell.onclick = () => selectCalendarDate(dateStr, status);
+                    }
+                }
+                grid.appendChild(cell);
+            }
+        }
+
+        function changeMonth(step) {
+            const targetDate = new Date(currentDisplayDate);
+            targetDate.setMonth(targetDate.getMonth() + step);
+            currentDisplayDate = targetDate;
+            renderModalCalendar();
+        }
+
+        function selectCalendarDate(dateStr, status) {
+            document.getElementById('startDate').value = dateStr;
+            const d = new Date(dateStr);
+            d.setDate(d.getDate() - 1);
+            document.getElementById('deliveryDate').value = formatDateISO(d);
+
+            const pkgSelect = document.getElementById('packageSelect');
+            if (!status.availA && status.availB) {
+                pkgSelect.value = "65|Set B - Waterjet";
+                showToast("Set A telah ditempah. Sistem mencadangkan Set B (Waterjet).", "info");
+            } else {
+                showToast(`Tarikh mula sewaan ditetapkan pada ${dateStr}`, "success");
+            }
+
+            closeCalendarModal();
+            onFormInputChange();
+            document.getElementById('tempahan').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function fetchBookedDatesFromSupabase() {
+            if (_supabase) {
+                try {
+                    const { data, error } = await _supabase.from('booked_dates').select('*');
+                    if (!error && data && data.length > 0) {
+                        bookedRecords = data.map(r => ({
+                            ...r,
+                            status: r.status || 'Approved'
+                        }));
+                        saveLocalBackup();
+                    }
+                } catch (err) {
+                    console.error("Supabase error:", err.message);
+                }
+            }
+            updatePendingNotificationBadges();
+            renderTodayLiveStatus();
+            renderModalCalendar();
+            renderAdminPendingList();
+            renderAdminDateList();
+            updateDashboardSummary();
+            onFormInputChange();
+        }
+
+        function updatePendingNotificationBadges() {
+            const pendingCount = bookedRecords.filter(r => r.status === 'Pending Approval').length;
+            const navBadge = document.getElementById('navPendingBadge');
+            const navBadgeMob = document.getElementById('navPendingBadgeMobile');
+            const tabBadge = document.getElementById('tabPendingCountBadge');
+
+            if (tabBadge) tabBadge.innerText = pendingCount;
+            if (pendingCount > 0) {
+                if (navBadge) { navBadge.innerText = pendingCount; navBadge.classList.remove('hidden'); }
+                if (navBadgeMob) { navBadgeMob.innerText = pendingCount; navBadgeMob.classList.remove('hidden'); }
+            } else {
+                if (navBadge) navBadge.classList.add('hidden');
+                if (navBadgeMob) navBadgeMob.classList.add('hidden');
+            }
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function verifyAdminPin() {
+            const pin = document.getElementById('adminPin').value;
+            if (pin === "1234") {
+                isAdminLoggedIn = true;
+                document.getElementById('adminLoginView').classList.add('hidden');
+                document.getElementById('adminControlView').classList.remove('hidden');
+                fetchBookedDatesFromSupabase();
+                showToast("Log masuk Admin berjaya!", "success");
+            } else {
+                showToast("PIN Admin salah!", "error");
+            }
+        }
+
+        function switchAdminTab(tabName) {
+            const tabs = {
+                pending: { btn: 'tabBtnPending', content: 'adminTabPendingContent' },
+                calendar: { btn: 'tabBtnCalendar', content: 'adminTabCalendarContent' },
+                dashboard: { btn: 'tabBtnDashboard', content: 'adminTabDashboardContent' }
+            };
+
+            Object.keys(tabs).forEach(k => {
+                const b = document.getElementById(tabs[k].btn);
+                const c = document.getElementById(tabs[k].content);
+                if (k === tabName) {
+                    b.className = "px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-yellow text-karcher-black transition flex items-center gap-2";
+                    c.classList.remove('hidden');
+                } else {
+                    b.className = "px-4 py-2.5 text-xs font-extrabold rounded-xl bg-karcher-card text-gray-400 hover:text-white border border-karcher-border transition flex items-center gap-2";
+                    c.classList.add('hidden');
+                }
+            });
+
+            if (tabName === 'dashboard') {
+                setTimeout(() => {
+                    renderMonthlyDemandChart();
+                    renderSetSalesPieChart();
+                }, 50);
+            }
+        }
+
+        // FUNGSI DIBAIKI: Luluskan Tempahan & Paksa Kemaskini Kalendar serta LocalStorage
+        async function approvePendingBooking(dateStr, setType, autoSendWA = false) {
+            const targetRec = bookedRecords.find(r => r.date_str === dateStr && (r.set_type || 'Set A') === setType);
+            const refCode = targetRec ? targetRec.booking_ref : null;
+
+            // 1. Kemaskini Rekod Dalam Memori
+            bookedRecords = bookedRecords.map(r => {
+                if ((refCode && r.booking_ref === refCode) || (r.date_str === dateStr && (r.set_type || 'Set A') === setType)) {
+                    return { ...r, status: 'Approved' };
+                }
+                return r;
+            });
+
+            // 2. Simpan ke LocalStorage serta-merta
+            saveLocalBackup();
+
+            // 3. Cuba Kemaskini ke Supabase
+            if (_supabase) {
+                try {
+                    let res;
+                    if (refCode) {
+                        res = await _supabase.from('booked_dates').update({ status: 'Approved' }).eq('booking_ref', refCode);
+                    } else {
+                        res = await _supabase.from('booked_dates').update({ status: 'Approved' }).eq('date_str', dateStr).eq('set_type', setType);
+                    }
+                    if (res.error) console.warn("Supabase Update Warning:", res.error.message);
+                } catch (err) {
+                    console.error("Supabase Error:", err);
+                }
+            }
+
+            // 4. Paksa Kemaskini UI (Kalendar, Admin List & Badges)
+            updatePendingNotificationBadges();
+            renderTodayLiveStatus();
+            renderModalCalendar();
+            renderAdminPendingList();
+            renderAdminDateList();
+            updateDashboardSummary();
+
+            showToast(`Tempahan ${setType} (${dateStr}) DILULUSKAN!`, "success");
+
+            if (autoSendWA) {
+                sendCustomerConfirmationWA(dateStr, setType);
+            }
+        }
+
+        function renderAdminPendingList() {
+            const container = document.getElementById('adminPendingList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const pendingList = bookedRecords.filter(r => r.status === 'Pending Approval');
+
+            if (pendingList.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-karcher-black border border-karcher-border rounded-2xl p-8 text-center">
+                        <i class="fa-solid fa-circle-check text-emerald-400 text-3xl mb-2"></i>
+                        <p class="text-sm font-bold text-white">Tiada Permohonan Pending Ketika Ini</p>
+                        <p class="text-xs text-gray-500 mt-1">Tempahan baru daripada borang web akan muncul di sini secara automatik.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            pendingList.forEach(rec => {
+                const st = rec.set_type || 'Set A';
+                const card = document.createElement('div');
+                card.className = "bg-karcher-black border border-amber-500/50 rounded-2xl p-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4";
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="bg-amber-500 text-karcher-black text-[10px] font-black px-2 py-0.5 rounded uppercase">PENDING APPROVAL</span>
+                            <span class="font-mono text-white font-black text-sm">${rec.date_str}</span>
+                            <span class="bg-karcher-card border border-karcher-yellow/40 text-karcher-yellow px-2 py-0.5 rounded text-xs font-extrabold">${st}</span>
+                            ${rec.booking_ref ? `<span class="text-[11px] font-mono text-gray-400">(${rec.booking_ref})</span>` : ''}
+                        </div>
+                        <div class="text-xs text-gray-200 font-bold pt-1">
+                            <i class="fa-solid fa-user text-karcher-yellow mr-1"></i> ${rec.cust_name || 'Pelanggan'} 
+                            <span class="text-emerald-400 font-mono ml-2"><i class="fa-brands fa-whatsapp mr-1"></i>${rec.cust_phone || '-'}</span>
+                        </div>
+                        <div class="text-[11px] text-gray-400">
+                            <i class="fa-solid fa-location-dot text-gray-500 mr-1"></i> ${rec.cust_address || '-'}
+                        </div>
+                        <div class="text-[11px] text-emerald-400 font-mono">
+                            Add-On: ${rec.addons || 'Tiada'} • Anggaran: <strong>RM ${rec.total_amount || 115}</strong>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap sm:flex-nowrap gap-2 w-full lg:w-auto">
+                        <button onclick="downloadOfficialReceiptPDF('${rec.date_str}', '${st}')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs transition flex items-center gap-1">
+                            <i class="fa-solid fa-file-pdf"></i> Resit PDF
+                        </button>
+                        <button onclick="approvePendingBooking('${rec.date_str}', '${st}', true)" class="bg-emerald-500 hover:bg-emerald-400 text-karcher-black font-black px-3.5 py-2.5 rounded-xl text-xs transition flex items-center gap-1 shadow-glow-emerald">
+                            <i class="fa-brands fa-whatsapp"></i> Lulus + WA
+                        </button>
+                        <button onclick="approvePendingBooking('${rec.date_str}', '${st}', false)" class="bg-karcher-card hover:bg-karcher-gray text-gray-200 border border-karcher-border font-bold px-3 py-2.5 rounded-xl text-xs transition flex items-center gap-1">
+                            <i class="fa-solid fa-check text-emerald-400"></i> Lulus
+                        </button>
+                        <button onclick="removeBookedRecord('${rec.date_str}', '${st}')" class="bg-rose-950/70 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 font-bold px-3 py-2.5 rounded-xl text-xs transition flex items-center gap-1">
+                            <i class="fa-solid fa-xmark"></i> Batal
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function addBookedDateSupabase() {
+            const dateVal = document.getElementById('newBookedDate').value;
+            const setTypeVal = document.getElementById('adminSetSelect').value;
+            const manualPhone = document.getElementById('adminManualPhone').value.trim();
+            if (!dateVal) return showToast("Sila pilih tarikh.", "error");
+
+            const exists = bookedRecords.some(r => r.date_str === dateVal && r.set_type === setTypeVal);
+            if (exists) return showToast(`${setTypeVal} sudah ditempah pada ${dateVal}!`, "error");
+
+            const newRec = {
+                date_str: dateVal,
+                set_type: setTypeVal,
+                status: 'Approved',
+                cust_name: 'Tempahan Manual Admin',
+                cust_phone: manualPhone || '',
+                booking_ref: 'MK-ADMIN'
+            };
+
+            if (_supabase) {
+                await _supabase.from('booked_dates').insert([newRec]);
+            }
+
+            bookedRecords.push(newRec);
+            saveLocalBackup();
+            document.getElementById('newBookedDate').value = '';
+            document.getElementById('adminManualPhone').value = '';
+            fetchBookedDatesFromSupabase();
+            showToast(`Rekod ${setTypeVal} dikunci sebagai Approved!`, "success");
+        }
+
+        async function removeBookedRecord(dateStr, setType) {
+            if (_supabase) {
+                await _supabase.from('booked_dates').delete().match({ date_str: dateStr, set_type: setType });
+            }
+            bookedRecords = bookedRecords.filter(r => !(r.date_str === dateStr && (r.set_type || 'Set A') === setType));
+            saveLocalBackup();
+            fetchBookedDatesFromSupabase();
+            showToast(`Slot ${setType} pada ${dateStr} telah dibuka semula.`, "info");
+        }
+
+        function renderAdminDateList() {
+            const listContainer = document.getElementById('adminDateList');
+            const countEl = document.getElementById('adminRecordCount');
+            if (!listContainer) return;
+            listContainer.innerHTML = '';
+
+            const sorted = [...bookedRecords].sort((a, b) => a.date_str.localeCompare(b.date_str));
+            if (countEl) countEl.innerText = sorted.length;
+
+            if (sorted.length === 0) {
+                listContainer.innerHTML = '<p class="text-xs text-gray-500 italic p-4 text-center">Tiada rekod tempahan.</p>';
+                return;
+            }
+
+            sorted.forEach(record => {
+                const st = record.set_type || 'Set A';
+                const isPend = record.status === 'Pending Approval';
+                const hasPhone = record.cust_phone && record.cust_phone.trim().length >= 9;
+
+                const statusBadge = isPend 
+                    ? `<span class="bg-amber-500/20 border border-amber-500 text-amber-300 text-[10px] px-2 py-0.5 rounded font-bold">PENDING</span>`
+                    : `<span class="bg-emerald-500/20 border border-emerald-500 text-emerald-300 text-[10px] px-2 py-0.5 rounded font-bold">APPROVED</span>`;
+
+                const item = document.createElement('div');
+                item.className = "flex flex-col sm:flex-row justify-between items-start sm:items-center bg-karcher-black px-4 py-3 rounded-xl border border-karcher-border text-xs gap-2";
+                item.innerHTML = `
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <span class="font-mono text-white font-bold">${record.date_str}</span>
+                        <span class="bg-karcher-card border border-karcher-yellow/40 text-karcher-yellow px-2.5 py-0.5 rounded-md font-extrabold uppercase">${st}</span>
+                        ${statusBadge}
+                        <span class="text-gray-300 text-[11px] font-semibold">${record.cust_name || ''}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 w-full sm:w-auto justify-end flex-wrap">
+                        <button onclick="downloadOfficialReceiptPDF('${record.date_str}', '${st}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-file-pdf"></i> Resit PDF
+                        </button>
+                        ${isPend ? `
+                            <button onclick="approvePendingBooking('${record.date_str}', '${st}', true)" class="bg-emerald-500 text-karcher-black px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> Lulus + WA
+                            </button>
+                        ` : ''}
+                        ${hasPhone ? `
+                            <button onclick="sendCustomerConfirmationWA('${record.date_str}', '${st}')" class="bg-emerald-950/80 hover:bg-emerald-600 text-emerald-300 border border-emerald-500/40 px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> WA
+                            </button>
+                        ` : ''}
+                        <button onclick="removeBookedRecord('${record.date_str}', '${st}')" class="text-rose-400 hover:text-white px-2.5 py-1 rounded-lg bg-rose-950/50 hover:bg-rose-600 transition font-bold">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function exportBookingsToCSV() {
+            if (bookedRecords.length === 0) return showToast("Tiada data untuk dieksport!", "error");
+            let csv = "Tarikh,Pakej Set,Status,Rujukan,Nama Pelanggan,No Telefon,Harga Sewaan (RM)\n";
+            bookedRecords.forEach(r => {
+                const st = r.set_type || 'Set A';
+                const rm = st === 'Set C' ? 120 : 65;
+                csv += `${r.date_str},${st},${r.status || 'Approved'},"${r.booking_ref || '-'}","${r.cust_name || '-'}","${r.cust_phone || '-'}",${rm}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Rekod_Madkarcher_${formatDateISO(new Date())}.csv`;
+            a.click();
+            showToast("Fail CSV berjaya dimuat turun!", "success");
+        }
+
+        function updateDashboardSummary() {
+            let approvedSales = 0;
+            let pendingSales = 0;
+            let countSetA = 0, countSetB = 0, countSetC = 0;
+            let approvedDaysCount = 0;
+
+            bookedRecords.forEach(record => {
+                const type = record.set_type || 'Set A';
+                const rate = type === 'Set C' ? 120 : 65;
+
+                if (record.status === 'Pending Approval') {
+                    pendingSales += rate;
+                } else {
+                    approvedSales += rate;
+                    approvedDaysCount++;
+                    if (type === 'Set C') countSetC++;
+                    else if (type === 'Set B') countSetB++;
+                    else countSetA++;
+                }
+            });
+
+            const targetROI = 3000;
+            document.getElementById('totalBookedDays').innerText = `${approvedDaysCount} Hari`;
+            document.getElementById('totalSalesAmount').innerText = `RM ${approvedSales.toLocaleString()}`;
+            document.getElementById('pendingSalesAmount').innerText = `RM ${pendingSales.toLocaleString()}`;
+
+            let highestSet = "Tiada Data";
+            if (approvedDaysCount > 0) {
+                if (countSetC >= countSetA && countSetC >= countSetB) highestSet = `Set C (Combo) • ${countSetC}x`;
+                else if (countSetB >= countSetA && countSetB >= countSetC) highestSet = `Set B (Waterjet) • ${countSetB}x`;
+                else highestSet = `Set A (Vacuum) • ${countSetA}x`;
+            }
+            document.getElementById('highestDemandSet').innerText = highestSet;
+
+            const percentage = Math.min(100, (approvedSales / targetROI) * 100);
+            document.getElementById('roiPercentage').innerText = `${percentage.toFixed(1)}%`;
+            document.getElementById('roiProgressBar').style.width = `${percentage}%`;
+
+            const remaining = targetROI - approvedSales;
+            document.getElementById('roiRemaining').innerText = remaining > 0 ? `RM ${remaining.toLocaleString()}` : `RM 0 (Target Tercapai!)`;
+        }
+
+        function renderMonthlyDemandChart() {
+            const ctx = document.getElementById('monthlyDemandChart');
+            if (!ctx) return;
+
+            const monthNames = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogos", "Sep", "Okt", "Nov", "Dis"];
+            const setAData = new Array(12).fill(0);
+            const setBData = new Array(12).fill(0);
+            const setCData = new Array(12).fill(0);
+
+            bookedRecords.filter(r => r.status !== 'Pending Approval').forEach(record => {
+                if (!record.date_str) return;
+                const parts = record.date_str.split('-');
+                if (parts.length === 3) {
+                    const mIdx = parseInt(parts[1], 10) - 1;
+                    const st = record.set_type || 'Set A';
+                    if (mIdx >= 0 && mIdx < 12) {
+                        if (st === 'Set B') setBData[mIdx] += 65;
+                        else if (st === 'Set C') setCData[mIdx] += 120;
+                        else setAData[mIdx] += 65;
+                    }
+                }
+            });
+
+            if (demandChartInstance) demandChartInstance.destroy();
+            demandChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthNames,
+                    datasets: [
+                        { label: 'Set A (RM65)', data: setAData, backgroundColor: '#3b82f6', borderRadius: 4 },
+                        { label: 'Set B (RM65)', data: setBData, backgroundColor: '#f59e0b', borderRadius: 4 },
+                        { label: 'Set C (RM120)', data: setCData, backgroundColor: '#10b981', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#d1d5db', font: { size: 10 } } } },
+                    scales: {
+                        x: { stacked: true, grid: { color: '#27272a' }, ticks: { color: '#9ca3af', font: { size: 10 } } },
+                        y: { stacked: true, grid: { color: '#27272a' }, ticks: { color: '#9ca3af', font: { size: 10 }, callback: v => 'RM ' + v } }
+                    }
+                }
+            });
+        }
+
+        function renderSetSalesPieChart() {
+            const ctx = document.getElementById('setSalesPieChart');
+            if (!ctx) return;
+
+            let totalSalesA = 0, totalSalesB = 0, totalSalesC = 0;
+            bookedRecords.filter(r => r.status !== 'Pending Approval').forEach(r => {
+                const st = r.set_type || 'Set A';
+                if (st === 'Set C') totalSalesC += 120;
+                else if (st === 'Set B') totalSalesB += 65;
+                else totalSalesA += 65;
+            });
+
+            if (pieChartInstance) pieChartInstance.destroy();
+            pieChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Set A (Vacuum)', 'Set B (Waterjet)', 'Set C (Combo)'],
+                    datasets: [{
+                        data: [totalSalesA, totalSalesB, totalSalesC],
+                        backgroundColor: ['#3b82f6', '#f59e0b', '#10b981'],
+                        borderColor: '#0A0A0B',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '68%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#d1d5db', font: { size: 11, weight: 'bold' } } }
+                    }
+                }
+            });
+        }
+
+        window.onload = function() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('startDate').value = formatDateISO(tomorrow);
+            onStartDateChange();
+            fetchBookedDatesFromSupabase();
+        };
+    </script>
+</body>
+</html>
