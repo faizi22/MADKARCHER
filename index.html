@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Chart.js JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-karcher-black text-gray-100 font-sans antialiased">
 
@@ -184,7 +186,7 @@
         </div>
     </section>
 
-    <!-- MODAL 1: KALENDAR UTAMA (PELANGGAN & ADMIN DENGAN PAPARAN SET) -->
+    <!-- MODAL 1: KALENDAR UTAMA -->
     <div id="calendarModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-karcher-dark border border-karcher-yellow/40 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
             <div class="flex justify-between items-center pb-4 mb-4 border-b border-karcher-gray">
@@ -197,12 +199,11 @@
                 <button onclick="closeCalendarModal()" class="text-gray-400 hover:text-white text-2xl font-bold px-2">&times;</button>
             </div>
 
-            <!-- PETUNJUK WARNA SET -->
             <div class="flex justify-center gap-3 mb-4 text-[11px] flex-wrap">
                 <span class="px-2 py-1 bg-emerald-950 border border-emerald-500 text-emerald-300 rounded font-semibold">Available</span>
-                <span class="px-2 py-1 bg-red-950 border border-red-500 text-red-300 rounded font-bold">SET A (Vacuum)</span>
-                <span class="px-2 py-1 bg-blue-950 border border-blue-500 text-blue-300 rounded font-bold">SET B (Waterjet)</span>
-                <span class="px-2 py-1 bg-purple-950 border border-purple-500 text-purple-300 rounded font-bold">SET C (Combo)</span>
+                <span class="px-2 py-1 bg-blue-950 border border-blue-500 text-blue-300 rounded font-bold">SET A (Vacuum)</span>
+                <span class="px-2 py-1 bg-amber-950 border border-amber-500 text-amber-300 rounded font-bold">SET B (Waterjet)</span>
+                <span class="px-2 py-1 bg-emerald-950 border border-emerald-500 text-emerald-300 rounded font-bold">SET C (Combo)</span>
             </div>
 
             <div class="flex justify-between items-center mb-4 bg-karcher-black p-2 rounded-lg border border-karcher-gray">
@@ -223,9 +224,9 @@
         </div>
     </div>
 
-    <!-- MODAL 2: ADMIN PANEL (TERBAHAGI KEPADA 2 HALAMAN TAB) -->
+    <!-- MODAL 2: ADMIN PANEL -->
     <div id="adminModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-karcher-dark border border-red-500/50 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div class="bg-karcher-dark border border-red-500/50 rounded-2xl max-w-3xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-4 mb-4 border-b border-karcher-gray">
                 <div class="flex items-center gap-2">
                     <div class="bg-red-600 text-white p-2 rounded-lg"><i class="fa-solid fa-user-gear"></i></div>
@@ -237,7 +238,6 @@
                 <button onclick="closeAdminModal()" class="text-gray-400 hover:text-white text-2xl font-bold px-2">&times;</button>
             </div>
 
-            <!-- Admin Authentication -->
             <div id="adminLoginView" class="space-y-4 py-4">
                 <p class="text-sm text-gray-300">Masukkan PIN Admin:</p>
                 <input type="password" id="adminPin" placeholder="PIN (Default: 1234)" class="w-full bg-karcher-black border border-karcher-gray text-white rounded-lg px-4 py-3 text-center font-mono text-lg">
@@ -246,20 +246,18 @@
                 </button>
             </div>
 
-            <!-- Admin Main View (After Login) -->
             <div id="adminControlView" class="hidden space-y-6">
-                
-                <!-- MENU NAVIGATION TAB ADMIN (PENGASINGAN HALAMAN) -->
+                <!-- TAB NAVIGATION -->
                 <div class="flex border-b border-karcher-gray gap-2">
                     <button id="tabBtnCalendar" onclick="switchAdminTab('calendar')" class="px-4 py-2 text-xs font-bold rounded-t-lg bg-karcher-yellow text-karcher-black">
                         <i class="fa-solid fa-calendar-days mr-1"></i> Pengurusan Kalendar
                     </button>
                     <button id="tabBtnDashboard" onclick="switchAdminTab('dashboard')" class="px-4 py-2 text-xs font-bold rounded-t-lg bg-karcher-gray text-gray-400 hover:text-white">
-                        <i class="fa-solid fa-chart-line mr-1"></i> Dashboard Jualan (ROI)
+                        <i class="fa-solid fa-chart-line mr-1"></i> Dashboard Jualan & Demand
                     </button>
                 </div>
 
-                <!-- HALAMAN 1: PENGURUSAN KALENDAR ADMIN -->
+                <!-- TAB 1: PENGURUSAN KALENDAR -->
                 <div id="adminTabCalendarContent" class="space-y-6">
                     <div class="bg-karcher-black p-4 rounded-xl border border-karcher-gray space-y-3">
                         <label class="block text-xs font-bold uppercase text-karcher-yellow">Tambah Tempahan Baru ke Kalendar</label>
@@ -288,37 +286,49 @@
                     </div>
                 </div>
 
-                <!-- HALAMAN 2: DASHBOARD RINGKASAN JUALAN & ROI -->
-                <div id="adminTabDashboardContent" class="hidden space-y-4">
-                    <div class="bg-karcher-black p-5 rounded-xl border border-karcher-yellow/30 space-y-4">
-                        <h4 class="text-sm font-black uppercase tracking-wider text-karcher-yellow flex items-center gap-2">
-                            <i class="fa-solid fa-chart-pie"></i> Ringkasan Prestasi Jualan
-                        </h4>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-karcher-dark p-4 rounded-lg border border-karcher-gray">
-                                <span class="text-xs text-gray-400 block mb-1">Jumlah Hari Ditempah</span>
-                                <span id="totalBookedDays" class="text-2xl font-black text-white">0 Hari</span>
-                            </div>
-                            <div class="bg-karcher-dark p-4 rounded-lg border border-karcher-gray">
-                                <span class="text-xs text-gray-400 block mb-1">Jumlah Jualan Terumpul</span>
-                                <span id="totalSalesAmount" class="text-2xl font-black text-karcher-yellow">RM 0</span>
-                            </div>
+                <!-- TAB 2: DASHBOARD JUALAN & STACKED BAR CHART -->
+                <div id="adminTabDashboardContent" class="hidden space-y-6">
+                    <!-- SUMMARY CARDS -->
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-karcher-black p-3.5 rounded-xl border border-karcher-gray">
+                            <span class="text-[10px] text-gray-400 block mb-1">Hari Ditempah</span>
+                            <span id="totalBookedDays" class="text-xl font-black text-white">0 Hari</span>
                         </div>
+                        <div class="bg-karcher-black p-3.5 rounded-xl border border-karcher-gray">
+                            <span class="text-[10px] text-gray-400 block mb-1">Total Sales</span>
+                            <span id="totalSalesAmount" class="text-xl font-black text-karcher-yellow">RM 0</span>
+                        </div>
+                        <div class="bg-karcher-black p-3.5 rounded-xl border border-karcher-gray">
+                            <span class="text-[10px] text-gray-400 block mb-1">Set Highest Demand</span>
+                            <span id="highestDemandSet" class="text-sm font-black text-emerald-400 block truncate">-</span>
+                        </div>
+                    </div>
 
-                        <!-- GRAF BENCHMARK ROI -->
-                        <div class="space-y-2 pt-3 border-t border-karcher-gray">
-                            <div class="flex justify-between text-xs font-semibold">
-                                <span class="text-gray-300">Graf Benchmark ROI (Sasaran RM3,000)</span>
-                                <span id="roiPercentage" class="text-karcher-yellow font-bold">0%</span>
-                            </div>
-                            <div class="w-full bg-karcher-dark rounded-full h-4 border border-karcher-gray overflow-hidden p-0.5">
-                                <div id="roiProgressBar" class="bg-gradient-to-r from-yellow-500 to-karcher-yellow h-full rounded-full transition-all duration-500" style="width: 0%"></div>
-                            </div>
-                            <div class="flex justify-between text-[11px] text-gray-400">
-                                <span>RM 0</span>
-                                <span>Baki: <strong id="roiRemaining" class="text-white">RM 3,000</strong></span>
-                            </div>
+                    <!-- BENCHMARK ROI -->
+                    <div class="bg-karcher-black p-4 rounded-xl border border-karcher-gray space-y-2">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <span class="text-gray-300">Graf Benchmark ROI (Target RM3,000)</span>
+                            <span id="roiPercentage" class="text-karcher-yellow font-bold">0%</span>
+                        </div>
+                        <div class="w-full bg-karcher-dark rounded-full h-3 border border-karcher-gray overflow-hidden p-0.5">
+                            <div id="roiProgressBar" class="bg-gradient-to-r from-yellow-500 to-karcher-yellow h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-gray-400">
+                            <span>RM 0</span>
+                            <span>Baki: <strong id="roiRemaining" class="text-white">RM 3,000</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- VISUALIZATION STACKED BAR CHART BY MONTH & SET DEMAND -->
+                    <div class="bg-karcher-black p-5 rounded-xl border border-karcher-yellow/30 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xs font-black uppercase tracking-wider text-karcher-yellow flex items-center gap-2">
+                                <i class="fa-solid fa-chart-column"></i> Analisis Jualan & Demand mengikut Set
+                            </h4>
+                            <span class="text-[10px] text-gray-400">Bulanan (Stacked Bar)</span>
+                        </div>
+                        <div class="relative h-64 w-full">
+                            <canvas id="monthlyDemandChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -330,19 +340,20 @@
         </div>
     </div>
 
-    <!-- JavaScript + Supabase Integration -->
+    <!-- JavaScript + Supabase Integration + Chart.js -->
     <script>
         const SUPABASE_URL = 'https://ofqzvwpclohqlddazvbp.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mcXp2d3BjbG9ocWxkZGF6dmJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4ODczNTEsImV4cCI6MjEwNzQ2MzM1MX0.hCArt7E-HP7yhsMC5JFlBLkcRUsVFYD4r1VB4Ddb0Nw';
-        
+
         let _supabase = null;
-        if (typeof supabase !== 'undefined' && SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== 'ey...') {
+        if (typeof supabase !== 'undefined' && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('...')) {
             _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
         let currentDisplayDate = new Date();
-        let bookedRecords = []; // Penuh dengan maklumat { date_str, set_type }
+        let bookedRecords = [];
         let isAdminLoggedIn = false;
+        let demandChartInstance = null; // Pembolehubah untuk graf Chart.js
 
         async function fetchBookedDatesFromSupabase() {
             if (!_supabase) {
@@ -357,6 +368,7 @@
                     renderModalCalendar();
                     renderAdminDateList();
                     updateDashboardSummary();
+                    renderMonthlyDemandChart(); // Render graf Chart.js
                 }
             } catch (err) {
                 console.error("Gagal mengambil data dari Supabase:", err.message);
@@ -364,7 +376,6 @@
             }
         }
 
-        // TUKAR TAB SELEPAS ADMIN LOGIN
         function switchAdminTab(tabName) {
             const btnCal = document.getElementById('tabBtnCalendar');
             const btnDash = document.getElementById('tabBtnDashboard');
@@ -381,17 +392,26 @@
                 btnCal.className = "px-4 py-2 text-xs font-bold rounded-t-lg bg-karcher-gray text-gray-400 hover:text-white";
                 contentDash.classList.remove('hidden');
                 contentCal.classList.add('hidden');
+                // Kemas kini graf bila tab diklik
+                renderMonthlyDemandChart();
             }
         }
 
-        // DASHBOARD SUMMARY & GRAF ROI
         function updateDashboardSummary() {
             let totalSales = 0;
+            let countSetA = 0, countSetB = 0, countSetC = 0;
+
             bookedRecords.forEach(record => {
-                if (record.set_type === 'Set C') {
+                const type = record.set_type || 'Set A';
+                if (type === 'Set C') {
                     totalSales += 120;
+                    countSetC++;
+                } else if (type === 'Set B') {
+                    totalSales += 65;
+                    countSetB++;
                 } else {
                     totalSales += 65;
+                    countSetA++;
                 }
             });
 
@@ -401,6 +421,19 @@
             document.getElementById('totalBookedDays').innerText = `${totalDays} Hari`;
             document.getElementById('totalSalesAmount').innerText = `RM ${totalSales.toLocaleString()}`;
 
+            // TENTUKAN SET HIGHEST DEMAND
+            let highestSet = "Tiada Data";
+            if (totalDays > 0) {
+                if (countSetC >= countSetA && countSetC >= countSetB) {
+                    highestSet = `Set C (Combo) - ${countSetC}x`;
+                } else if (countSetB >= countSetA && countSetB >= countSetC) {
+                    highestSet = `Set B (Waterjet) - ${countSetB}x`;
+                } else {
+                    highestSet = `Set A (Vacuum) - ${countSetA}x`;
+                }
+            }
+            document.getElementById('highestDemandSet').innerText = highestSet;
+
             let percentage = (totalSales / targetROI) * 100;
             if (percentage > 100) percentage = 100;
 
@@ -409,6 +442,102 @@
 
             const remaining = targetROI - totalSales;
             document.getElementById('roiRemaining').innerText = remaining > 0 ? `RM ${remaining.toLocaleString()}` : `RM 0 (Target Capai!)`;
+        }
+
+        // FUNGSI UTAMA GRAF STACKED BAR CHART (CHART.JS)
+        function renderMonthlyDemandChart() {
+            const ctx = document.getElementById('monthlyDemandChart');
+            if (!ctx) return;
+
+            const monthNames = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogos", "Sep", "Okt", "Nov", "Dis"];
+            
+            // Inisialisasi data 12 bulan (12 elemen berangka 0)
+            const setAData = new Array(12).fill(0);
+            const setBData = new Array(12).fill(0);
+            const setCData = new Array(12).fill(0);
+
+            // Pengiraan mengikut bulan berdasarkan date_str
+            bookedRecords.forEach(record => {
+                if (!record.date_str) return;
+                const dateParts = record.date_str.split('-');
+                if (dateParts.length === 3) {
+                    const monthIndex = parseInt(dateParts[1], 10) - 1; // 0 - 11
+                    const setType = record.set_type || 'Set A';
+
+                    if (monthIndex >= 0 && monthIndex < 12) {
+                        if (setType === 'Set B') {
+                            setBData[monthIndex] += 65; // RM65 untuk Set B
+                        } else if (setType === 'Set C') {
+                            setCData[monthIndex] += 120; // RM120 untuk Set C
+                        } else {
+                            setAData[monthIndex] += 65; // RM65 untuk Set A
+                        }
+                    }
+                }
+            });
+
+            if (demandChartInstance) {
+                demandChartInstance.destroy(); // Padam graf lama sebelum bina yang baharu
+            }
+
+            demandChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthNames,
+                    datasets: [
+                        {
+                            label: 'Set A (Vacuum - RM65)',
+                            data: setAData,
+                            backgroundColor: '#3b82f6', // Biru
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Set B (Waterjet - RM65)',
+                            data: setBData,
+                            backgroundColor: '#f59e0b', // Oren
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Set C (Combo - RM120)',
+                            data: setCData,
+                            backgroundColor: '#10b981', // Hijau
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#d1d5db', font: { size: 10 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: RM ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            grid: { color: '#27272a' },
+                            ticks: { color: '#9ca3af', font: { size: 10 } }
+                        },
+                        y: {
+                            stacked: true,
+                            grid: { color: '#27272a' },
+                            ticks: { 
+                                color: '#9ca3af', 
+                                font: { size: 10 },
+                                callback: function(value) { return 'RM ' + value; }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function openCalendarModal() {
@@ -467,12 +596,11 @@
                     cell.className = "h-12 rounded-lg bg-karcher-gray/20 border border-gray-800 text-gray-600 font-bold flex flex-col items-center justify-center cursor-not-allowed text-xs opacity-40";
                     cell.innerHTML = `<span>${day}</span>`;
                 } else if (matchedRecord) {
-                    // TENTUKAN WARNA BADGE MENGIKUT SET
-                    let setBadgeClass = "bg-red-600 border-red-500 text-white";
+                    let setBadgeClass = "bg-blue-600 border-blue-500 text-white";
                     if (matchedRecord.set_type === 'Set B') {
-                        setBadgeClass = "bg-blue-600 border-blue-500 text-white";
+                        setBadgeClass = "bg-amber-600 border-amber-500 text-white";
                     } else if (matchedRecord.set_type === 'Set C') {
-                        setBadgeClass = "bg-purple-600 border-purple-500 text-white";
+                        setBadgeClass = "bg-emerald-600 border-emerald-500 text-white";
                     }
 
                     cell.className = `h-12 rounded-lg bg-black border border-gray-700 font-bold flex flex-col items-center justify-center text-xs`;
