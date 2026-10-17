@@ -65,7 +65,7 @@
 
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-b from-karcher-dark to-karcher-black py-16 border-b border-karcher-gray">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
             <div class="space-y-6">
                 <div class="inline-flex items-center gap-2 bg-karcher-yellow/10 border border-karcher-yellow/30 text-karcher-yellow px-4 py-1.5 rounded-full text-sm font-semibold">
                     <i class="fa-solid fa-bolt"></i> SEWAAN VACUUM & WATERJET
@@ -87,20 +87,31 @@
                 </div>
             </div>
             
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-karcher-dark border border-karcher-yellow/30 rounded-2xl p-6 text-center shadow-2xl flex flex-col items-center justify-center">
-                    <div class="w-14 h-14 bg-karcher-yellow/10 rounded-full flex items-center justify-center text-karcher-yellow text-2xl mb-3 border border-karcher-yellow/20">
+            <!-- 3 KAD PAKEJ (SET A, SET B, SET C) -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-karcher-dark border border-karcher-yellow/30 rounded-2xl p-5 text-center shadow-2xl flex flex-col items-center justify-center">
+                    <div class="w-12 h-12 bg-karcher-yellow/10 rounded-full flex items-center justify-center text-karcher-yellow text-xl mb-3 border border-karcher-yellow/20">
                         <i class="fa-solid fa-broom"></i>
                     </div>
-                    <h3 class="text-base font-black text-white">SET A: VACUUM PUZZI</h3>
-                    <p class="text-gray-400 text-xs mt-1">RM 65 / Hari</p>
+                    <h3 class="text-sm font-black text-white">SET A: VACUUM PUZZI</h3>
+                    <p class="text-karcher-yellow font-bold text-xs mt-1">RM 65 / Hari</p>
                 </div>
-                <div class="bg-karcher-dark border border-karcher-yellow/30 rounded-2xl p-6 text-center shadow-2xl flex flex-col items-center justify-center">
-                    <div class="w-14 h-14 bg-karcher-yellow/10 rounded-full flex items-center justify-center text-karcher-yellow text-2xl mb-3 border border-karcher-yellow/20">
+                
+                <div class="bg-karcher-dark border border-karcher-yellow/30 rounded-2xl p-5 text-center shadow-2xl flex flex-col items-center justify-center">
+                    <div class="w-12 h-12 bg-karcher-yellow/10 rounded-full flex items-center justify-center text-karcher-yellow text-xl mb-3 border border-karcher-yellow/20">
                         <i class="fa-solid fa-shower"></i>
                     </div>
-                    <h3 class="text-base font-black text-white">SET B: WATERJET</h3>
-                    <p class="text-gray-400 text-xs mt-1">RM 65 / Hari</p>
+                    <h3 class="text-sm font-black text-white">SET B: WATERJET</h3>
+                    <p class="text-karcher-yellow font-bold text-xs mt-1">RM 65 / Hari</p>
+                </div>
+
+                <div class="bg-karcher-dark border border-emerald-500/50 rounded-2xl p-5 text-center shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
+                    <span class="absolute top-2 right-2 bg-emerald-600 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase">Jimat</span>
+                    <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-400 text-xl mb-3 border border-emerald-500/20">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <h3 class="text-sm font-black text-white">SET C: COMBO</h3>
+                    <p class="text-emerald-400 font-bold text-xs mt-1">RM 120 / Hari</p>
                 </div>
             </div>
         </div>
@@ -359,7 +370,6 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mcXp2d3BjbG9ocWxkZGF6dmJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4ODczNTEsImV4cCI6MjEwNzQ2MzM1MX0.hCArt7E-HP7yhsMC5JFlBLkcRUsVFYD4r1VB4Ddb0Nw';
 
         let _supabase = null;
-        // Buka sambungan hanya jika kunci API sah dan tiada '...'
         try {
             if (typeof supabase !== 'undefined' && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('...')) {
                 _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -378,19 +388,14 @@
         let demandChartInstance = null;
         let pieChartInstance = null;
 
-        // FUNGSI MEMBUKA MODAL ADMIN (DIJAMIN BERFUNGSI)
         function openAdminModal() {
             const modal = document.getElementById('adminModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-            }
+            if (modal) modal.classList.remove('hidden');
         }
 
         function closeAdminModal() {
             const modal = document.getElementById('adminModal');
-            if (modal) {
-                modal.classList.add('hidden');
-            }
+            if (modal) modal.classList.add('hidden');
         }
 
         function openCalendarModal() {
@@ -404,9 +409,7 @@
 
         function closeCalendarModal() {
             const modal = document.getElementById('calendarModal');
-            if (modal) {
-                modal.classList.add('hidden');
-            }
+            if (modal) modal.classList.add('hidden');
         }
 
         async function fetchBookedDatesFromSupabase() {
@@ -426,7 +429,7 @@
                 renderMonthlyDemandChart();
                 renderSetSalesPieChart();
             } catch (err) {
-                console.error("Mod Luar Talian / Supabase:", err.message);
+                console.error("Supabase Error:", err.message);
                 renderModalCalendar();
             }
         }
